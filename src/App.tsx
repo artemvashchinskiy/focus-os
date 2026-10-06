@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import useAuth from "./hooks/useAuth";
 import useLocalStorage from "./hooks/useLocalStorage";
@@ -92,6 +92,8 @@ function App() {
     const [panelOpen, setPanelOpen] = useState(false);
     const [editingNote, setEditingNote] =
         useState<Note | null>(null);
+
+    const notePanelRef = useRef<HTMLDivElement | null>(null);
 
     const [notes, setNotes] = useLocalStorage<Note[]>(
         user ? `calendar-notes-${user.id}` : "calendar-empty",
@@ -201,6 +203,19 @@ function App() {
             );
         };
     }, []);
+
+    useEffect(() => {
+        if (!panelOpen) return;
+
+        const frame = window.requestAnimationFrame(() => {
+            notePanelRef.current?.scrollIntoView({
+                behavior: "smooth",
+                block: "center"
+            });
+        });
+
+        return () => window.cancelAnimationFrame(frame);
+    }, [panelOpen, editingNote?.id]);
 
     useEffect(() => {
         async function checkDropboxConnection() {
@@ -694,6 +709,50 @@ function App() {
                 updatedAt: now
             }
         ]);
+        touch();
+    }
+
+    function updateGoal(id: number, text: string, category: GoalCategory) {
+        const value = text.trim();
+        if (!value) return;
+
+        setGoals(prev =>
+            prev.map(goal =>
+                goal.id === id
+                    ? { ...goal, text: value, category, updatedAt: Date.now() }
+                    : goal
+            )
+        );
+
+        touch();
+    }
+
+    function moveGoal(id: number, direction: -1 | 1) {
+        setGoals(prev => {
+            const index = prev.findIndex(goal => goal.id === id);
+            if (index < 0) return prev;
+
+            const goal = prev[index];
+            const samePeriod = prev
+                .map((item, itemIndex) => ({ item, itemIndex }))
+                .filter(item =>
+                    item.item.period === goal.period &&
+                    item.item.periodKey === goal.periodKey
+                );
+
+            const localIndex = samePeriod.findIndex(item => item.item.id === id);
+            const targetLocalIndex = localIndex + direction;
+
+            if (targetLocalIndex < 0 || targetLocalIndex >= samePeriod.length) {
+                return prev;
+            }
+
+            const targetIndex = samePeriod[targetLocalIndex].itemIndex;
+            const next = [...prev];
+            [next[index], next[targetIndex]] = [next[targetIndex], next[index]];
+            return next;
+        });
+
         touch();
     }
 
@@ -1283,7 +1342,8 @@ function App() {
                     )}
 
                     {panelOpen && (
-                        <NotePanel
+                        <div ref={notePanelRef} className="note-panel-anchor">
+                            <NotePanel
                             key={
                                 editingNote?.id ??
                                 "new"
@@ -1302,41 +1362,133 @@ function App() {
                                 setEditingNote(null);
                                 setPanelOpen(false);
                             }}
-                            goals={goals.filter(goal => {
-                                const date = new Date(`${editingNote?.date ?? selectedDate!}T12:00:00`);
-                                if (Number.isNaN(date.getTime())) return false;
-                                if (goal.period === "year") return goal.periodKey === String(date.getFullYear());
-                                if (goal.period === "quarter") return goal.periodKey === `${date.getFullYear()}-Q${Math.floor(date.getMonth() / 3) + 1}`;
-                                if (goal.period === "month") return goal.periodKey === `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}`;
-                                const day = date.getDay() || 7;
-                                const thursday = new Date(date);
-                                thursday.setDate(date.getDate() + 4 - day);
-                                const year = thursday.getFullYear();
-                                const start = new Date(year, 0, 1);
-                                const week = Math.ceil((((thursday.getTime() - start.getTime()) / 86400000) + 1) / 7);
-                                return goal.periodKey === `${year}-W${String(week).padStart(2, "0")}`;
-                            })}
-                        />
+                            matrixTasks={matrixTasks}
+                            />
+                        </div>
                     )}
 
                 </div>
 
-                <NotesList
-                    notes={visibleNotes}
-                    onDelete={deleteNote}
-                    onMove={moveNote}
-                    onEdit={note => {
-                        touch();
-                        setEditingNote(note);
-                        setSelectedDate(note.date);
-                        setPanelOpen(true);
-                    }}
-                    onTick={updateTimer}
-                    onComplete={completeNote}
-                    touch={touch}
-                    onStart={startTimer}
-                    onPause={pauseTimer}
-                />
+                <div className="right-workspace-column">
+                    <NotesList
+                        notes={visibleNotes}
+                        onDelete={deleteNote}
+                        onMove={moveNote}
+                        onEdit={note => {
+                            touch();
+                            setEditingNote(note);
+                            setSelectedDate(note.date);
+                            setPanelOpen(true);
+                        }}
+                        onTick={updateTimer}
+                        onComplete={completeNote}
+                        touch={touch}
+                        onStart={startTimer}
+                        onPause={pauseTimer}
+                    />
+
+                    <section
+                        className="calendar-guide"
+                        aria-label="How to use Focus OS"
+                    >
+                        <div className="calendar-guide-header">
+                            <span className="calendar-guide-eyebrow">
+                                Focus OS · Practical Guide
+                            </span>
+                            <h2>Turn intention into a working plan</h2>
+                            <p>
+                                Focus OS separates the landscape from the work:
+                                the calendar holds what belongs to a particular
+                                day, Notes hold the work you still need to do,
+                                Matrix helps you decide what matters, Goals give
+                                direction, and Expenses record the cost of living.
+                            </p>
+                        </div>
+
+                        <article className="calendar-guide-article">
+                            <h3>1. Start with the calendar</h3>
+                            <p>
+                                Click a day to create a note for that date.
+                                Put appointments, deadlines, important calls,
+                                planned work and other commitments that genuinely
+                                belong to that day on the calendar.
+                            </p>
+
+                            <h3>2. Turn a Matrix task into today's work</h3>
+                            <p>
+                                In Matrix, place important work in Do first or
+                                Schedule. When you choose a calendar day, its
+                                note editor can take an unfinished Matrix task
+                                and copy its text into that day's Notes column.
+                                The calendar gives the work a date; the Notes
+                                column becomes the working list for that day.
+                            </p>
+
+                            <h3>3. Write enough detail to act</h3>
+                            <p>
+                                A note should tell you what to do when the day
+                                arrives. Add the useful detail, not merely a
+                                vague title. The goal is to reduce remembering
+                                and increase doing.
+                            </p>
+
+                            <h3>4. Plan before you execute</h3>
+                            <p>
+                                Brian Tracy repeatedly emphasizes planning,
+                                prioritizing and identifying the most important
+                                task before beginning work. Focus OS follows the
+                                same principle: decide what matters first, then
+                                give it a place in time.
+                            </p>
+
+                            <h3>5. Build direction, not just a to-do pile</h3>
+                            <p>
+                                Goals can be set for a year, quarter, month and
+                                week. They are direction, not another list of
+                                tiny tasks. Matrix and calendar notes translate
+                                that direction into concrete actions.
+                            </p>
+
+                            <h3>6. Review and reset</h3>
+                            <p>
+                                David Allen's Getting Things Done approach gives
+                                regular review a central role. Check what was
+                                completed, what remains, what is coming next and
+                                what no longer deserves attention.
+                            </p>
+
+                            <h3>7. Keep the main thing the main thing</h3>
+                            <p>
+                                Jim Rohn's teaching repeatedly returns to
+                                disciplined daily action and the importance of
+                                choosing what deserves your time. Napoleon Hill
+                                likewise stresses a definite purpose and
+                                organized action. Use Focus OS to make those
+                                principles visible in ordinary days rather than
+                                keeping them only as ideas.
+                            </p>
+
+                            <h3>8. A simple daily routine</h3>
+                            <p>
+                                Before finishing the day, look at tomorrow and
+                                add only what you already know belongs there.
+                                In the morning, choose the day's real priority,
+                                work through the Notes column, use the timer when
+                                focused effort helps, and review the calendar
+                                rather than relying on memory.
+                            </p>
+
+                            <h3>9. Use the other tools when they add value</h3>
+                            <p>
+                                Matrix is for deciding. Goals are for direction.
+                                Notes are for daily execution. Expenses are for
+                                financial awareness. Cloud backup is for keeping
+                                your Focus OS data safe across devices. None of
+                                these should become another source of clutter.
+                            </p>
+                        </article>
+                    </section>
+                </div>
             </div>
 
             <WorkspaceSidebar
@@ -1364,6 +1516,8 @@ function App() {
                 goals={goals}
                 goalDate={selectedDate ? new Date(`${selectedDate}T12:00:00`) : currentDate}
                 onAddGoal={addGoal}
+                onUpdateGoal={updateGoal}
+                onMoveGoal={moveGoal}
                 onDeleteGoal={deleteGoal}
             />
 
@@ -1466,80 +1620,6 @@ function App() {
                     setAboutOpen(false)
                 }
             />
-                    <section
-                        className="calendar-guide"
-                        aria-label="How to use Focus OS"
-                    >
-                        <div className="calendar-guide-header">
-                            <span className="calendar-guide-eyebrow">
-                                Focus OS · Practical Guide
-                            </span>
-
-                            <h2>
-                                Turn the calendar into a working plan
-                            </h2>
-
-                            <p>
-                                Use the calendar for commitments,
-                                notes for details, and the other
-                                workspace tools only when they add value.
-                            </p>
-                        </div>
-
-                        <article className="calendar-guide-article">
-                            <h3>1. Start with the calendar</h3>
-                            <p>
-                                Click a day to create a note for that date.
-                                Put appointments, deadlines, important calls
-                                and other things that genuinely belong to a
-                                particular day on the calendar.
-                            </p>
-
-                            <h3>2. Write the details, not just the title</h3>
-                            <p>
-                                Use the note itself for the information you
-                                need when the day arrives. A useful entry
-                                should reduce the amount of remembering you
-                                have to do later.
-                            </p>
-
-                            <h3>3. Plan before you execute</h3>
-                            <p>
-                                Brian Tracy's published time-management
-                                material emphasizes planning the coming day,
-                                making a list and identifying the most
-                                important task before starting work.
-                            </p>
-
-                            <h3>4. Review instead of constantly rebuilding</h3>
-                            <p>
-                                David Allen's Getting Things Done method puts
-                                strong emphasis on regular reviews, including
-                                checking previous and upcoming calendar data
-                                and the actions they trigger.
-                            </p>
-
-                            <h3>5. A simple Focus OS routine</h3>
-                            <p>
-                                Before finishing the day, check tomorrow's
-                                calendar. Add the important tasks and
-                                information you already know. In the morning,
-                                open the calendar, choose the day's real
-                                priority, and work through your notes instead
-                                of trying to remember everything from your head.
-                            </p>
-
-                            <h3>6. Keep the system small</h3>
-                            <p>
-                                The calendar is the hard landscape: things
-                                that must happen on a particular day. Notes
-                                hold useful detail. Matrix, Expenses and the
-                                other workspace tools are there when you
-                                actually need them.
-                            </p>
-                        </article>
-                    </section>
-
             <footer className="app-footer">
                 <span>
                     © {currentDate.getFullYear()} Focus OS
