@@ -11,7 +11,9 @@ import { createFocusOSBackup, restoreFocusOSBackup } from "./appBackupService";
 
 const APP_KEY = "mxmw4fjmtuduqkr";
 
-const REDIRECT_URI = window.location.origin; 
+const REDIRECT_URI =
+    import.meta.env.VITE_DROPBOX_REDIRECT_URI ||
+    window.location.origin;
 
 let dropboxLoginPromise: Promise<boolean> | null = null;
 

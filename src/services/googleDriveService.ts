@@ -28,6 +28,13 @@ let tokenClient:
 let scriptPromise:
     Promise<void> | null = null;
 
+// Start loading Google Identity Services immediately.
+// This prevents the OAuth request from waiting for a script load after
+// the user clicks the button, which can cause popup-blocker problems.
+if (typeof window !== "undefined") {
+    void loadGoogleScript();
+}
+
 
 /* --------------------------------
    LOAD GOOGLE IDENTITY SERVICES
@@ -179,6 +186,15 @@ export async function connectGoogleDrive():
 
             const google =
                 (window as any).google;
+
+            if (!google?.accounts?.oauth2) {
+                reject(
+                    new Error(
+                        "Google Identity Services is not available."
+                    )
+                );
+                return;
+            }
 
 
             tokenClient =
