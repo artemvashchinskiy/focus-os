@@ -24,6 +24,8 @@ export interface Note{
 
     notified?:boolean;
 
+    goalId?:number;
+
     duplicate?: boolean;
 
     duplicateGroup?: string;

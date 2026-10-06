@@ -2,12 +2,13 @@ import type { FocusLicense } from "./licenseService";
 import { getLicense, installLicense } from "./licenseService";
 
 export interface FocusOSBackup {
-    version: 3;
+    version: 4;
     createdAt: number;
     calendarNotes: unknown[];
     freeNotes: unknown[];
     matrixTasks: unknown[];
     expenses: unknown[];
+    goals: unknown[];
     license: FocusLicense | null;
 }
 
@@ -37,12 +38,13 @@ export function createFocusOSBackup(calendarNotes: unknown[]): FocusOSBackup {
     const userId = getCurrentUserId();
 
     return {
-        version: 3,
+        version: 4,
         createdAt: Date.now(),
         calendarNotes: Array.isArray(calendarNotes) ? calendarNotes : [],
         freeNotes: userId ? readArray(`free-notes-${userId}`) : [],
         matrixTasks: userId ? readArray(`focus-matrix-${userId}`) : [],
         expenses: userId ? readArray(`focus-expenses-${userId}`) : [],
+        goals: userId ? readArray(`focus-goals-${userId}`) : [],
         license: userId ? getLicense(userId) : null
     };
 }
@@ -53,7 +55,7 @@ export function isFocusOSBackup(value: unknown): value is FocusOSBackup {
     const backup = value as Partial<FocusOSBackup>;
 
     return (
-        (backup.version === 3 || backup.version === 2) &&
+        (backup.version === 4 || backup.version === 3 || backup.version === 2) &&
         Array.isArray(backup.calendarNotes) &&
         Array.isArray(backup.freeNotes) &&
         Array.isArray(backup.matrixTasks) &&
@@ -101,12 +103,17 @@ export function restoreFocusOSBackup(value: unknown): void {
             JSON.stringify(backup.expenses)
         );
 
+        localStorage.setItem(
+            `focus-goals-${userId}`,
+            JSON.stringify(backup.goals ?? [])
+        );
+
         /*
          * License restore is only accepted when the backup contains
          * a valid key. Expiry dates are preserved from the backup.
          */
         if (
-            backup.version === 3 &&
+            backup.version >= 3 &&
             backup.license &&
             backup.license.key
         ) {

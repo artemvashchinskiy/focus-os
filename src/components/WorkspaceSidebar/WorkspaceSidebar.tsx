@@ -1,12 +1,14 @@
 import type { EisenhowerQuadrant, EisenhowerTask } from "../../types/eisenhower";
 import type { Expense, ExpenseCategory } from "../../types/expense";
 import type { FreeNote } from "../../types/freeNote";
+import type { Goal, GoalCategory, GoalPeriod } from "../../types/goal";
+import Goals from "../Goals/Goals";
 import Matrix from "../Matrix/Matrix";
 import Expenses from "../Expenses/Expenses";
 import FreeNotes from "../FreeNotes/FreeNotes";
 import "./WorkspaceSidebar.scss";
 
-type WorkspaceView = "notes" | "matrix" | "expenses";
+type WorkspaceView = "notes" | "matrix" | "expenses" | "goals";
 
 interface WorkspaceSidebarProps {
     open:boolean;
@@ -30,13 +32,18 @@ interface WorkspaceSidebarProps {
     onUpdateExpense:(id:number,amount:number,category:ExpenseCategory,description:string,date:string)=>void;
     onMoveExpense:(id:number,direction:-1|1)=>void;
     onDeleteExpense:(id:number)=>void;
+    goals:Goal[];
+    goalDate:Date;
+    onAddGoal:(text:string,period:GoalPeriod,periodKey:string,category:GoalCategory)=>void;
+    onDeleteGoal:(id:number)=>void;
 }
 
 function WorkspaceSidebar({
     open,view,onOpen,onClose,onViewChange,
     freeNotes,onAddFreeNote,onUpdateFreeNote,onDeleteFreeNote,onMoveFreeNote,
     matrixTasks,onAddMatrixTask,onToggleMatrixTask,onUpdateMatrixTask,onMoveMatrixTask,onDeleteMatrixTask,
-    expenses,onAddExpense,onUpdateExpense,onMoveExpense,onDeleteExpense
+    expenses,onAddExpense,onUpdateExpense,onMoveExpense,onDeleteExpense,
+    goals,goalDate,onAddGoal,onDeleteGoal
 }:WorkspaceSidebarProps){
     return (
         <>
@@ -55,6 +62,7 @@ function WorkspaceSidebar({
                     <button type="button" className={view === "notes" ? "active" : ""} onClick={()=>onViewChange("notes")}>📝 Notes</button>
                     <button type="button" className={view === "matrix" ? "active" : ""} onClick={()=>onViewChange("matrix")}>☐ Matrix</button>
                     <button type="button" className={view === "expenses" ? "active" : ""} onClick={()=>onViewChange("expenses")}>€ Expenses</button>
+                    <button type="button" className={view === "goals" ? "active" : ""} onClick={()=>onViewChange("goals")}>◎ Goals</button>
                 </nav>
 
                 <div className="workspace-sidebar-content">
@@ -79,6 +87,12 @@ function WorkspaceSidebar({
                         onUpdate={onUpdateExpense}
                         onMove={onMoveExpense}
                         onDelete={onDeleteExpense}
+                    />}
+                    {view === "goals" && <Goals
+                        goals={goals}
+                        date={goalDate}
+                        onAdd={onAddGoal}
+                        onDelete={onDeleteGoal}
                     />}
                 </div>
             </aside>

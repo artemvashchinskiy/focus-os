@@ -18,6 +18,7 @@ import type { FreeNote } from "./types/freeNote";
 import type { EisenhowerQuadrant, EisenhowerTask } from "./types/eisenhower";
 import type { Expense, ExpenseCategory } from "./types/expense";
 import type { BackupEntry } from "./types/activityTypeLog";
+import type { Goal, GoalCategory, GoalPeriod } from "./types/goal";
 
 import {
     exportNotes,
@@ -114,6 +115,11 @@ function App() {
             user ? `focus-expenses-${user.id}` : "focus-expenses-empty",
             []
         );
+
+    const [goals, setGoals] = useLocalStorage<Goal[]>(
+        user ? `focus-goals-${user.id}` : "focus-goals-empty",
+        []
+    );
 
     const [dropboxConnected, setDropboxConnected] =
         useState(false);
@@ -666,6 +672,36 @@ function App() {
         setExpenses(prev =>
             prev.filter(expense => expense.id !== id)
         );
+        touch();
+    }
+
+    function addGoal(
+        text: string,
+        period: GoalPeriod,
+        periodKey: string,
+        category: GoalCategory
+    ) {
+        const now = Date.now();
+        setGoals(prev => [
+            ...prev,
+            {
+                id: now,
+                text,
+                period,
+                periodKey,
+                category,
+                createdAt: now,
+                updatedAt: now
+            }
+        ]);
+        touch();
+    }
+
+    function deleteGoal(id: number) {
+        setGoals(prev => prev.filter(goal => goal.id !== id));
+        setNotes(prev => prev.map(note =>
+            note.goalId === id ? { ...note, goalId: undefined } : note
+        ));
         touch();
     }
 
@@ -1266,6 +1302,20 @@ function App() {
                                 setEditingNote(null);
                                 setPanelOpen(false);
                             }}
+                            goals={goals.filter(goal => {
+                                const date = new Date(`${editingNote?.date ?? selectedDate!}T12:00:00`);
+                                if (Number.isNaN(date.getTime())) return false;
+                                if (goal.period === "year") return goal.periodKey === String(date.getFullYear());
+                                if (goal.period === "quarter") return goal.periodKey === `${date.getFullYear()}-Q${Math.floor(date.getMonth() / 3) + 1}`;
+                                if (goal.period === "month") return goal.periodKey === `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}`;
+                                const day = date.getDay() || 7;
+                                const thursday = new Date(date);
+                                thursday.setDate(date.getDate() + 4 - day);
+                                const year = thursday.getFullYear();
+                                const start = new Date(year, 0, 1);
+                                const week = Math.ceil((((thursday.getTime() - start.getTime()) / 86400000) + 1) / 7);
+                                return goal.periodKey === `${year}-W${String(week).padStart(2, "0")}`;
+                            })}
                         />
                     )}
 
@@ -1311,6 +1361,10 @@ function App() {
                 onUpdateExpense={updateExpense}
                 onMoveExpense={moveExpense}
                 onDeleteExpense={deleteExpense}
+                goals={goals}
+                goalDate={selectedDate ? new Date(`${selectedDate}T12:00:00`) : currentDate}
+                onAddGoal={addGoal}
+                onDeleteGoal={deleteGoal}
             />
 
             <Sidebar

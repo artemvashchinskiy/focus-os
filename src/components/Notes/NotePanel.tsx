@@ -1,5 +1,6 @@
 import { useState } from "react";
 import type { Note } from "../../types/note";
+import type { Goal } from "../../types/goal";
 
 
 interface NotePanelProps {
@@ -12,6 +13,8 @@ interface NotePanelProps {
 
     onClose:()=>void;
 
+    goals:Goal[];
+
 }
 
 
@@ -21,7 +24,8 @@ function NotePanel({
     date,
     note,
     onSave,
-    onClose
+    onClose,
+    goals
 
 }:NotePanelProps){
 
@@ -30,6 +34,9 @@ function NotePanel({
     const [text,setText] = useState(
         note?.text ?? ""
     );
+
+
+    const [goalId,setGoalId] = useState<number | "">(note?.goalId ?? "");
 
 
     const [minutes,setMinutes] = useState(
@@ -94,7 +101,9 @@ function NotePanel({
 
         notified:
 
-            note?.notified
+            note?.notified,
+
+        goalId: goalId === "" ? undefined : goalId
 
     };
 
@@ -173,6 +182,25 @@ function NotePanel({
 
 
 
+
+
+            <label>
+
+                Goal:
+
+            </label>
+
+            <select
+                value={goalId}
+                onChange={e => setGoalId(e.target.value ? Number(e.target.value) : "")}
+            >
+                <option value="">No goal</option>
+                {goals.map(goal => (
+                    <option key={goal.id} value={goal.id}>
+                        {goal.text} ({goal.period})
+                    </option>
+                ))}
+            </select>
 
 
             <label>
