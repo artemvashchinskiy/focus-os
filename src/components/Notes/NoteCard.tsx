@@ -1,10 +1,8 @@
 import type { Note } from "../../types/note";
-import type { Goal } from "../../types/goal";
 import Timer from "../Timer/Timer";
 
 interface NoteCardProps {
     note:Note;
-    goal?:Goal;
     onDelete:(id:number)=>void;
     onMove:(id:number,direction:-1|1)=>void;
     onTick:(id:number, seconds:number)=>void;
@@ -29,12 +27,6 @@ function NoteCard({ note,onDelete,onMove,onTick,onComplete,touch,onEdit,onStart,
             </div>
 
             <div className="small">Date: {" "}{note.date}</div>
-
-            {goal && (
-                <div className="note-card-goal">
-                    <span>Goal:</span> {goal.text}
-                </div>
-            )}
 
             {note.duplicate && (
                 <div className="duplicate-warning" style={{background: note.duplicateColor ?? "#fff7cc"}}>

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import type { Note } from "../../types/note";
-import type { EisenhowerTask } from "../../types/eisenhower";
+import type { Goal } from "../../types/goal";
 
 
 interface NotePanelProps {
@@ -13,7 +13,7 @@ interface NotePanelProps {
 
     onClose:()=>void;
 
-    matrixTasks:EisenhowerTask[];
+    goals:Goal[];
 
 }
 
@@ -25,7 +25,7 @@ function NotePanel({
     note,
     onSave,
     onClose,
-    matrixTasks
+    goals
 
 }:NotePanelProps){
 
@@ -37,15 +37,6 @@ function NotePanel({
 
 
     const [goalId,setGoalId] = useState<number | "">(note?.goalId ?? "");
-
-    const availableTasks = matrixTasks.filter(
-        task =>
-            !task.completed &&
-            (
-                task.quadrant === "urgent-important" ||
-                task.quadrant === "not-urgent-important"
-            )
-    );
 
 
     const [minutes,setMinutes] = useState(
@@ -193,32 +184,23 @@ function NotePanel({
 
 
 
-            <label className="note-field-label">
+            <label>
 
                 Goal:
 
             </label>
 
             <select
-                className="note-goal-select"
                 value={goalId}
                 onChange={e => setGoalId(e.target.value ? Number(e.target.value) : "")}
             >
-                <option value="">Select from Do first / Schedule</option>
-                {availableTasks.map(task => (
-                    <option key={task.id} value={task.id}>
-                        {task.text} — {
-                            task.quadrant === "urgent-important"
-                                ? "Do first"
-                                : "Schedule"
-                        }
+                <option value="">No goal</option>
+                {goals.map(goal => (
+                    <option key={goal.id} value={goal.id}>
+                        {goal.text} ({goal.period})
                     </option>
                 ))}
             </select>
-
-            <div className="note-goal-hint">
-                Only unfinished Matrix tasks from Do first and Schedule are shown.
-            </div>
 
 
             <label>
