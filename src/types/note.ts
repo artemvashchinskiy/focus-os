@@ -26,6 +26,11 @@ export interface Note{
 
     goalId?:number;
 
+    // Matrix task selected when the note was created/edited.
+    matrixTaskId?: number;
+    matrixQuadrant?: "urgent-important" | "not-urgent-important";
+    matrixTaskText?: string;
+
     duplicate?: boolean;
 
     duplicateGroup?: string;

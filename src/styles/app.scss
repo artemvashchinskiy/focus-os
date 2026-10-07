@@ -1268,3 +1268,101 @@ button:disabled {
     font-size:18px;
 
 }
+
+/* Matrix selection inside New/Edit Note */
+.matrix-note-field {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+    margin: 2px 0 8px;
+}
+
+.matrix-note-label {
+    margin: 0;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-h);
+}
+
+.matrix-note-row {
+    display: grid;
+    grid-template-columns: minmax(110px, 0.35fr) minmax(0, 1fr);
+    gap: 8px;
+}
+
+.matrix-note-select {
+    width: 100%;
+    box-sizing: border-box;
+    min-height: 40px;
+    padding: 9px 34px 9px 11px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    background: #fff;
+    color: var(--text-h);
+    font: inherit;
+    cursor: pointer;
+    transition: 0.15s ease;
+}
+
+.matrix-note-select:hover {
+    border-color: var(--accent);
+}
+
+.matrix-note-select:focus {
+    outline: 2px solid var(--accent);
+    outline-offset: 1px;
+}
+
+.matrix-note-select:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.matrix-note-hint {
+    font-size: 12px;
+    line-height: 1.4;
+    color: var(--text);
+}
+
+.note-card-matrix {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 9px;
+    padding: 8px 10px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    background: rgba(128, 128, 128, 0.06);
+}
+
+.note-card-matrix-label {
+    flex: 0 0 auto;
+    padding: 3px 7px;
+    border-radius: 999px;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--text);
+}
+
+.note-card-matrix-text {
+    min-width: 0;
+    font-size: 12px;
+    line-height: 1.35;
+    overflow-wrap: anywhere;
+    color: var(--text-h);
+}
+
+@media (max-width: 520px) {
+    .matrix-note-row {
+        grid-template-columns: 1fr;
+    }
+
+    .note-card-matrix {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+}

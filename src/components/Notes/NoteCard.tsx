@@ -28,6 +28,19 @@ function NoteCard({ note,onDelete,onMove,onTick,onComplete,touch,onEdit,onStart,
 
             <div className="small">Date: {" "}{note.date}</div>
 
+            {note.matrixTaskText && (
+                <div className="note-card-matrix">
+                    <span className="note-card-matrix-label">
+                        {note.matrixQuadrant === "not-urgent-important"
+                            ? "Schedule"
+                            : "Do first"}
+                    </span>
+                    <span className="note-card-matrix-text">
+                        {note.matrixTaskText}
+                    </span>
+                </div>
+            )}
+
             {note.duplicate && (
                 <div className="duplicate-warning" style={{background: note.duplicateColor ?? "#fff7cc"}}>
                     Imported {note.date}<br/>
