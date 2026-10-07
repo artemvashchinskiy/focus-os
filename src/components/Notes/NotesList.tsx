@@ -1,8 +1,10 @@
 import type { Note } from "../../types/note";
+import type { Goal } from "../../types/goal";
 import NoteCard from "./NoteCard";
 
 interface NotesListProps {
     notes:Note[];
+    goals:Goal[];
     onDelete:(id:number)=>void;
     onMove:(id:number,direction:-1|1)=>void;
     onEdit:(note:Note)=>void;
@@ -13,7 +15,7 @@ interface NotesListProps {
     onPause:(id:number)=>void;
 }
 
-function NotesList({ notes,onDelete,onMove,onEdit,onTick,onComplete,touch,onStart,onPause }:NotesListProps){
+function NotesList({ notes,goals,onDelete,onMove,onEdit,onTick,onComplete,touch,onStart,onPause }:NotesListProps){
     return(
         <aside className="notes-list">
             <div className="header">Notes</div>
@@ -24,6 +26,7 @@ function NotesList({ notes,onDelete,onMove,onEdit,onTick,onComplete,touch,onStar
                     <NoteCard
                         key={note.id}
                         note={note}
+                        goal={goals.find(item => item.id === note.goalId)}
                         onDelete={onDelete}
                         onMove={onMove}
                         onEdit={onEdit}

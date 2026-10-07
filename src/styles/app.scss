@@ -1268,3 +1268,85 @@ button:disabled {
     font-size:18px;
 
 }
+
+/* Note editor */
+.note-panel {
+    max-width: 680px;
+    margin: 0 auto;
+    padding: 20px;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    box-shadow: var(--shadow);
+}
+
+.note-panel .panel-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 14px;
+}
+
+.note-panel .panel-header b {
+    font-size: 1.15rem;
+    color: var(--text-h);
+}
+
+.note-panel .small {
+    color: var(--text);
+    margin-bottom: 12px;
+}
+
+.note-panel textarea {
+    min-height: 120px;
+    margin: 0 0 16px;
+    resize: vertical;
+}
+
+.note-field-label {
+    display: block;
+    margin: 4px 0 7px;
+    font-weight: 700;
+    color: var(--text-h);
+}
+
+.note-goal-select,
+.note-panel input[type="number"] {
+    width: 100%;
+    box-sizing: border-box;
+    min-height: 42px;
+    margin: 0;
+    padding: 9px 12px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    background: #fff;
+    color: var(--text-h);
+    font: inherit;
+}
+
+.note-goal-hint {
+    margin: 7px 0 16px;
+    font-size: .82rem;
+    color: var(--text);
+}
+
+.note-panel .actions {
+    justify-content: flex-end;
+    margin-top: 18px;
+}
+
+.note-card-goal {
+    margin-top: 8px;
+    padding: 8px 10px;
+    border-radius: 9px;
+    background: rgba(255,255,255,.65);
+    border: 1px solid var(--border);
+    color: var(--text);
+    font-size: .9rem;
+}
+
+.note-card-goal span {
+    font-weight: 700;
+    color: var(--text-h);
+}
