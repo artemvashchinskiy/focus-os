@@ -1,132 +1,274 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import type { Note } from "../../types/note";
-import type { EisenhowerTask } from "../../types/eisenhower";
+import type { Goal } from "../../types/goal";
+
 
 interface NotePanelProps {
-    date: string;
-    note?: Note | null;
-    onSave: (note: Note) => void;
-    onClose: () => void;
-    matrixTasks: EisenhowerTask[];
+
+    date:string;
+
+    note?:Note | null;
+
+    onSave:(note:Note)=>void;
+
+    onClose:()=>void;
+
+    goals:Goal[];
+
 }
 
+
+
 function NotePanel({
+
     date,
     note,
     onSave,
     onClose,
-    matrixTasks
-}: NotePanelProps) {
-    const [text, setText] = useState(note?.text ?? "");
-    const [minutes, setMinutes] = useState(note ? note.duration / 60 : 25);
-    const [selectedTaskId, setSelectedTaskId] = useState("");
+    goals
 
-    const availableTasks = matrixTasks.filter(
-        task =>
-            !task.completed &&
-            (task.quadrant === "urgent-important" ||
-                task.quadrant === "not-urgent-important")
+}:NotePanelProps){
+
+
+
+    const [text,setText] = useState(
+        note?.text ?? ""
     );
 
-    useEffect(() => {
-        setText(note?.text ?? "");
-        setMinutes(note ? note.duration / 60 : 25);
-        setSelectedTaskId("");
-    }, [note, date]);
 
-    function attachMatrixTask(id: string) {
-        setSelectedTaskId(id);
+    const [goalId,setGoalId] = useState<number | "">(note?.goalId ?? "");
 
-        if (!id) return;
 
-        const task = availableTasks.find(item => String(item.id) === id);
-        if (task) {
-            setText(task.text);
-        }
-    }
+    const [minutes,setMinutes] = useState(
+        note
+        ?
+        note.duration / 60
+        :
+        25
+    );
 
-    function saveNote() {
-        const value = text.trim();
-        if (!value) return;
 
-        const timerSeconds = Math.max(1, Number(minutes) || 25) * 60;
 
-        const updatedNote: Note = {
-            id: note?.id ?? Date.now(),
-            date,
-            text: value,
-            duration: timerSeconds,
-            remaining: note?.running ? note.remaining : timerSeconds,
-            completed: note?.completed ?? false,
-            running: note?.running ?? false,
-            startedAt: note?.startedAt,
-            endAt: note?.endAt,
-            finishedAt: note?.finishedAt,
-            notified: note?.notified,
-            goalId: note?.goalId
-        };
+    function saveNote(){
+
+
+    const timerSeconds = minutes * 60;
+
+
+    const updatedNote:Note = {
+
+        id: note?.id ?? Date.now(),
+
+        date,
+
+        text,
+
+        duration:timerSeconds,
+
+        remaining:
+
+            note?.running
+
+            ? note.remaining
+
+            : timerSeconds,
+
+
+        completed:
+
+            note?.completed ?? false,
+
+
+        running:
+
+            note?.running ?? false,
+
+
+        startedAt:
+
+            note?.startedAt,
+
+
+        endAt:
+
+            note?.endAt,
+
+
+        finishedAt:
+
+            note?.finishedAt,
+
+
+        notified:
+
+            note?.notified,
+
+        goalId: goalId === "" ? undefined : goalId
+
+    };
+
+
 
         onSave(updatedNote);
+
+
+        setText("");
+
     }
 
-    return (
+
+
+
+
+    return(
+
         <div className="note-panel">
+
+
             <div className="panel-header">
-                <b>{note ? "Edit Note" : "New Note"}</b>
-                <button type="button" onClick={onClose} aria-label="Close note editor">
+
+
+                <b>
+
+                    {
+                        note
+                        ?
+                        "Edit Note"
+                        :
+                        "New Note"
+                    }
+
+                </b>
+
+
+                <button
+
+                    onClick={onClose}
+
+                >
                     ✕
                 </button>
+
+
             </div>
 
-            <div className="small">Date: {date}</div>
+
+
+
+
+            <div className="small">
+
+                Date:
+                {" "}
+                {date}
+
+            </div>
+
+
+
+
 
             <textarea
+
                 value={text}
-                onChange={event => setText(event.target.value)}
+
+                onChange={
+                    e=>setText(e.target.value)
+                }
+
                 placeholder="Write your task..."
-                autoFocus={!note}
-                rows={5}
+
             />
 
-            <label htmlFor="matrix-task-select">Attach unfinished Matrix task:</label>
+
+
+
+
+            <label>
+
+                Goal:
+
+            </label>
 
             <select
-                id="matrix-task-select"
-                value={selectedTaskId}
-                onChange={event => attachMatrixTask(event.target.value)}
+                value={goalId}
+                onChange={e => setGoalId(e.target.value ? Number(e.target.value) : "")}
             >
-                <option value="">Choose from Do first / Schedule...</option>
-                {availableTasks.map(task => (
-                    <option key={task.id} value={task.id}>
-                        {task.text}
+                <option value="">No goal</option>
+                {goals.map(goal => (
+                    <option key={goal.id} value={goal.id}>
+                        {goal.text} ({goal.period})
                     </option>
                 ))}
             </select>
 
-            <div className="note-panel-hint">
-                Selecting a Matrix task copies its text into this day's note.
-            </div>
 
-            <label htmlFor="timer-minutes">Timer minutes:</label>
+            <label>
+
+                Timer minutes:
+
+            </label>
+
+
 
             <input
-                id="timer-minutes"
+
                 type="number"
+
                 min="1"
+
                 value={minutes}
-                onChange={event => setMinutes(Number(event.target.value))}
+
+                onChange={
+                    e=>
+                    setMinutes(
+                        Number(e.target.value)
+                    )
+                }
+
             />
 
+
+
+
+
             <div className="actions">
-                <button type="button" onClick={saveNote} disabled={!text.trim()}>
+
+
+                <button
+
+                    onClick={saveNote}
+
+                    disabled={!text.trim()}
+
+                >
+
                     Save
+
                 </button>
-                <button type="button" onClick={onClose}>
+
+
+
+                <button
+
+                    onClick={onClose}
+
+                >
+
                     Cancel
+
                 </button>
+
+
             </div>
+
+
+
         </div>
-    );
+
+    )
+
 }
+
 
 export default NotePanel;

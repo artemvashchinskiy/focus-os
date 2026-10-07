@@ -6,8 +6,8 @@ interface MatrixProps {
     tasks: EisenhowerTask[];
     onAdd: (text: string, quadrant: EisenhowerQuadrant) => void;
     onToggle: (id: number) => void;
-    onUpdate: (id: number, text: string) => void;
-    onMove: (id: number, direction: -1 | 1) => void;
+    onUpdate: (id:number,text:string) => void;
+    onMove: (id:number,direction:-1|1) => void;
     onDelete: (id: number) => void;
 }
 
@@ -19,15 +19,14 @@ const quadrants: {
     { id: "urgent-important", title: "Do first", hint: "Urgent + important" },
     { id: "not-urgent-important", title: "Schedule", hint: "Important, not urgent" },
     { id: "urgent-not-important", title: "Delegate", hint: "Urgent, not important" },
-    { id: "not-urgent-not-important", title: "Eliminate", hint: "Not urgent + not important" }
+    { id: "not-urgent-not-important", title: "Eliminate", hint: "Not urgent + not important" },
 ];
 
 function Matrix({ tasks, onAdd, onToggle, onUpdate, onMove, onDelete }: MatrixProps) {
     const [draft, setDraft] = useState("");
-    const [selectedQuadrant, setSelectedQuadrant] =
-        useState<EisenhowerQuadrant>("urgent-important");
-    const [editingId, setEditingId] = useState<number | null>(null);
-    const [editingText, setEditingText] = useState("");
+    const [selectedQuadrant, setSelectedQuadrant] = useState<EisenhowerQuadrant>("urgent-important");
+    const [editingId,setEditingId] = useState<number | null>(null);
+    const [editingText,setEditingText] = useState("");
 
     function addTask() {
         const text = draft.trim();
@@ -36,16 +35,23 @@ function Matrix({ tasks, onAdd, onToggle, onUpdate, onMove, onDelete }: MatrixPr
         setDraft("");
     }
 
-    function startEdit(task: EisenhowerTask) {
+    function handleKeyDown(event: React.KeyboardEvent<HTMLTextAreaElement>) {
+        if (event.key === "Enter" && !event.shiftKey) {
+            event.preventDefault();
+            addTask();
+        }
+    }
+
+    function startEdit(task:EisenhowerTask){
         setEditingId(task.id);
         setEditingText(task.text);
     }
 
-    function saveEdit() {
-        if (editingId === null) return;
+    function saveEdit(){
+        if(editingId === null) return;
         const value = editingText.trim();
-        if (!value) return;
-        onUpdate(editingId, value);
+        if(!value) return;
+        onUpdate(editingId,value);
         setEditingId(null);
         setEditingText("");
     }
@@ -60,133 +66,59 @@ function Matrix({ tasks, onAdd, onToggle, onUpdate, onMove, onDelete }: MatrixPr
             </div>
 
             <div className="matrix-form">
-                <textarea
-                    value={draft}
-                    onChange={event => setDraft(event.target.value)}
-                    placeholder="Add a task..."
-                    aria-label="Matrix task"
-                    rows={2}
-                />
-
-                <select
-                    value={selectedQuadrant}
-                    onChange={event =>
-                        setSelectedQuadrant(event.target.value as EisenhowerQuadrant)
-                    }
-                    aria-label="Matrix quadrant"
-                >
-                    {quadrants.map(quadrant => (
-                        <option key={quadrant.id} value={quadrant.id}>
-                            {quadrant.title}
-                        </option>
-                    ))}
+                <textarea value={draft} onChange={event => setDraft(event.target.value)} onKeyDown={handleKeyDown} placeholder="Add a task..." aria-label="Matrix task" rows={1} />
+                <select value={selectedQuadrant} onChange={event => setSelectedQuadrant(event.target.value as EisenhowerQuadrant)} aria-label="Matrix quadrant">
+                    {quadrants.map(quadrant => <option key={quadrant.id} value={quadrant.id}>{quadrant.title}</option>)}
                 </select>
-
-                <button type="button" onClick={addTask} disabled={!draft.trim()}>
-                    Add task
-                </button>
+                <button type="button" onClick={addTask} disabled={!draft.trim()}>Add</button>
             </div>
 
             <div className="matrix-grid">
                 {quadrants.map(quadrant => {
-                    const quadrantTasks = tasks.filter(
-                        task => task.quadrant === quadrant.id
-                    );
-
+                    const quadrantTasks = tasks.filter(task => task.quadrant === quadrant.id);
                     return (
-                        <div
-                            className={`matrix-quadrant matrix-${quadrant.id}`}
-                            key={quadrant.id}
-                        >
+                        <div className={`matrix-quadrant matrix-${quadrant.id}`} key={quadrant.id}>
                             <div className="matrix-quadrant-header">
                                 <div>
                                     <strong>{quadrant.title}</strong>
                                     <span>{quadrant.hint}</span>
                                 </div>
-                                <span className="matrix-count">
-                                    {quadrantTasks.length}
-                                </span>
+                                <span className="matrix-count">{quadrantTasks.length}</span>
                             </div>
 
                             <div className="matrix-tasks">
                                 {quadrantTasks.length === 0 ? (
-                                    <div className="matrix-empty">
-                                        Nothing here
-                                    </div>
-                                ) : (
-                                    quadrantTasks.map((task, index) => (
-                                        <article
-                                            className={`matrix-task ${task.completed ? "completed" : ""}`}
-                                            key={task.id}
-                                        >
-                                            {editingId === task.id ? (
-                                                <div className="matrix-edit-row">
-                                                    <textarea
-                                                        value={editingText}
-                                                        onChange={event =>
-                                                            setEditingText(event.target.value)
-                                                        }
-                                                        rows={3}
-                                                        autoFocus
-                                                        aria-label="Edit matrix task"
-                                                    />
-                                                    <div className="matrix-edit-buttons">
-                                                        <button type="button" onClick={saveEdit}>
-                                                            Finish
-                                                        </button>
-                                                        <button
-                                                            type="button"
-                                                            onClick={() => setEditingId(null)}
-                                                        >
-                                                            Cancel
-                                                        </button>
-                                                    </div>
+                                    <div className="matrix-empty">Nothing here</div>
+                                ) : quadrantTasks.map((task,index) => (
+                                    <div className={`matrix-task ${task.completed ? "completed" : ""}`} key={task.id}>
+                                        {editingId === task.id ? (
+                                            <div className="matrix-edit-row">
+                                                <input
+                                                    value={editingText}
+                                                    onChange={event=>setEditingText(event.target.value)}
+                                                    onKeyDown={event=>{ if(event.key === "Enter") saveEdit(); }}
+                                                    autoFocus
+                                                    aria-label="Edit matrix task"
+                                                />
+                                                <button type="button" onClick={saveEdit}>Save</button>
+                                                <button type="button" onClick={()=>setEditingId(null)}>Cancel</button>
+                                            </div>
+                                        ) : (
+                                            <>
+                                                <span className="matrix-task-text">{task.text}</span>
+                                                <div className="matrix-task-actions" aria-label="Task actions">
+                                                    <button type="button" className="matrix-check" onClick={() => onToggle(task.id)} aria-label={task.completed ? "Mark incomplete" : "Mark complete"} title={task.completed ? "Mark incomplete" : "Mark complete"}>
+                                                        <span className="matrix-checkbox">{task.completed ? "✓" : ""}</span>
+                                                    </button>
+                                                    <button type="button" onClick={()=>onMove(task.id,-1)} disabled={index === 0} aria-label="Move task up" title="Move up">↑</button>
+                                                    <button type="button" onClick={()=>onMove(task.id,1)} disabled={index === quadrantTasks.length - 1} aria-label="Move task down" title="Move down">↓</button>
+                                                    <button type="button" onClick={()=>startEdit(task)} aria-label="Edit task" title="Edit">✎</button>
+                                                    <button type="button" onClick={() => onDelete(task.id)} aria-label="Delete task" title="Delete">×</button>
                                                 </div>
-                                            ) : (
-                                                <>
-                                                    <div className="matrix-task-actions" aria-label="Task actions">
-                                                        <button
-                                                            type="button"
-                                                            onClick={() => onMove(task.id, -1)}
-                                                            disabled={index === 0}
-                                                            aria-label="Move task up"
-                                                        >↑</button>
-                                                        <button
-                                                            type="button"
-                                                            onClick={() => onMove(task.id, 1)}
-                                                            disabled={index === quadrantTasks.length - 1}
-                                                            aria-label="Move task down"
-                                                        >↓</button>
-                                                        <button
-                                                            type="button"
-                                                            onClick={() => startEdit(task)}
-                                                            aria-label="Edit task"
-                                                        >✎</button>
-                                                        <button
-                                                            type="button"
-                                                            onClick={() => onDelete(task.id)}
-                                                            aria-label="Delete task"
-                                                        >×</button>
-                                                        <button
-                                                            type="button"
-                                                            className="matrix-check"
-                                                            onClick={() => onToggle(task.id)}
-                                                            aria-label={task.completed ? "Mark incomplete" : "Mark complete"}
-                                                        >
-                                                            <span className="matrix-checkbox">
-                                                                {task.completed ? "✓" : ""}
-                                                            </span>
-                                                        </button>
-                                                    </div>
-
-                                                    <div className="matrix-task-text">
-                                                        {task.text}
-                                                    </div>
-                                                </>
-                                            )}
-                                        </article>
-                                    ))
-                                )}
+                                            </>
+                                        )}
+                                    </div>
+                                ))}
                             </div>
                         </div>
                     );
