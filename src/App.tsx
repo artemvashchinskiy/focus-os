@@ -697,6 +697,42 @@ function App() {
         touch();
     }
 
+    function updateGoal(id: number, text: string, category: GoalCategory) {
+        setGoals(prev => prev.map(goal =>
+            goal.id === id ? { ...goal, text, category, updatedAt: Date.now() } : goal
+        ));
+        touch();
+    }
+
+    function moveGoal(id: number, direction: -1 | 1) {
+        setGoals(prev => {
+            const index = prev.findIndex(goal => goal.id === id);
+            if (index < 0) return prev;
+
+            const current = prev[index];
+            const groupIndexes = prev
+                .map((goal, goalIndex) =>
+                    goal.period === current.period && goal.periodKey === current.periodKey
+                        ? goalIndex
+                        : -1
+                )
+                .filter(goalIndex => goalIndex >= 0);
+
+            const position = groupIndexes.indexOf(index);
+            const targetPosition = position + direction;
+
+            if (position < 0 || targetPosition < 0 || targetPosition >= groupIndexes.length) {
+                return prev;
+            }
+
+            const target = groupIndexes[targetPosition];
+            const next = [...prev];
+            [next[index], next[target]] = [next[target], next[index]];
+            return next;
+        });
+        touch();
+    }
+
     function deleteGoal(id: number) {
         setGoals(prev => prev.filter(goal => goal.id !== id));
         setNotes(prev => prev.map(note =>
@@ -1302,7 +1338,20 @@ function App() {
                                 setEditingNote(null);
                                 setPanelOpen(false);
                             }}
-                            matrixTasks={matrixTasks}
+                            goals={goals.filter(goal => {
+                                const date = new Date(`${editingNote?.date ?? selectedDate!}T12:00:00`);
+                                if (Number.isNaN(date.getTime())) return false;
+                                if (goal.period === "year") return goal.periodKey === String(date.getFullYear());
+                                if (goal.period === "quarter") return goal.periodKey === `${date.getFullYear()}-Q${Math.floor(date.getMonth() / 3) + 1}`;
+                                if (goal.period === "month") return goal.periodKey === `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}`;
+                                const day = date.getDay() || 7;
+                                const thursday = new Date(date);
+                                thursday.setDate(date.getDate() + 4 - day);
+                                const year = thursday.getFullYear();
+                                const start = new Date(year, 0, 1);
+                                const week = Math.ceil((((thursday.getTime() - start.getTime()) / 86400000) + 1) / 7);
+                                return goal.periodKey === `${year}-W${String(week).padStart(2, "0")}`;
+                            })}
                         />
                     )}
 
@@ -1351,6 +1400,8 @@ function App() {
                 goals={goals}
                 goalDate={selectedDate ? new Date(`${selectedDate}T12:00:00`) : currentDate}
                 onAddGoal={addGoal}
+                onUpdateGoal={updateGoal}
+                onMoveGoal={moveGoal}
                 onDeleteGoal={deleteGoal}
             />
 

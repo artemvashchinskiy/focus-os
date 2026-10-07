@@ -35,6 +35,8 @@ interface WorkspaceSidebarProps {
     goals:Goal[];
     goalDate:Date;
     onAddGoal:(text:string,period:GoalPeriod,periodKey:string,category:GoalCategory)=>void;
+    onUpdateGoal:(id:number,text:string,category:GoalCategory)=>void;
+    onMoveGoal:(id:number,direction:-1|1)=>void;
     onDeleteGoal:(id:number)=>void;
 }
 
@@ -43,7 +45,7 @@ function WorkspaceSidebar({
     freeNotes,onAddFreeNote,onUpdateFreeNote,onDeleteFreeNote,onMoveFreeNote,
     matrixTasks,onAddMatrixTask,onToggleMatrixTask,onUpdateMatrixTask,onMoveMatrixTask,onDeleteMatrixTask,
     expenses,onAddExpense,onUpdateExpense,onMoveExpense,onDeleteExpense,
-    goals,goalDate,onAddGoal,onDeleteGoal
+    goals,goalDate,onAddGoal,onUpdateGoal,onMoveGoal,onDeleteGoal
 }:WorkspaceSidebarProps){
     return (
         <>
@@ -59,10 +61,10 @@ function WorkspaceSidebar({
                 </div>
 
                 <nav className="workspace-nav">
-                    <button type="button" className={view === "notes" ? "active" : ""} onClick={()=>onViewChange("notes")}>📝 Notes</button>
-                    <button type="button" className={view === "matrix" ? "active" : ""} onClick={()=>onViewChange("matrix")}>☐ Matrix</button>
-                    <button type="button" className={view === "expenses" ? "active" : ""} onClick={()=>onViewChange("expenses")}>€ Expenses</button>
                     <button type="button" className={view === "goals" ? "active" : ""} onClick={()=>onViewChange("goals")}>◎ Goals</button>
+                    <button type="button" className={view === "matrix" ? "active" : ""} onClick={()=>onViewChange("matrix")}>☐ Matrix</button>
+                    <button type="button" className={view === "notes" ? "active" : ""} onClick={()=>onViewChange("notes")}>📝 Notes</button>
+                    <button type="button" className={view === "expenses" ? "active" : ""} onClick={()=>onViewChange("expenses")}>€ Expenses</button>
                 </nav>
 
                 <div className="workspace-sidebar-content">
@@ -92,6 +94,8 @@ function WorkspaceSidebar({
                         goals={goals}
                         date={goalDate}
                         onAdd={onAddGoal}
+                        onUpdate={onUpdateGoal}
+                        onMove={onMoveGoal}
                         onDelete={onDeleteGoal}
                     />}
                 </div>

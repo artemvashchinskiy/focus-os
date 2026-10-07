@@ -241,3 +241,48 @@
 .expenses-categories>span{font-size:12px;color:#888;}
 .expenses-categories>div{display:flex;justify-content:space-between;font-size:13px;}
 .expenses-categories small{color:#999;}
+
+/* Expense cards: actions top-right, amount/category/date below, comment last. */
+.expense-row {
+    position:relative;
+    display:block;
+    padding:9px;
+    padding-top:43px;
+}
+.expense-actions {
+    position:absolute;
+    top:9px;
+    right:9px;
+    width:auto;
+    display:flex;
+    flex-direction:row;
+    gap:3px;
+}
+.expense-actions button {
+    flex:0 0 28px;
+    width:28px;
+}
+.expense-main {
+    display:flex;
+    flex-direction:column;
+    gap:4px;
+    min-width:0;
+}
+.expense-summary-line {
+    display:flex;
+    align-items:baseline;
+    flex-wrap:wrap;
+    gap:8px;
+}
+.expense-summary-line > strong {
+    font-size:18px;
+    line-height:1.2;
+}
+.expense-summary-line .expense-meta {
+    margin-top:0;
+    font-size:13px;
+}
+.expense-description {
+    font-size:13px;
+    line-height:1.4;
+}

@@ -30,3 +30,38 @@
 .matrix-edit-row button { width:100%; min-height:34px; border:1px solid var(--border); border-radius:8px; background:var(--panel); color:var(--text-h); cursor:pointer; }
 .matrix-empty { padding:8px 4px; color:#999; font-size:12px; }
 @media (max-width:520px) { .matrix-grid { grid-template-columns:1fr; } }
+
+/* Compact task layout: actions stay top-right, task text sits below. */
+.matrix-task {
+    position: relative;
+    display: block;
+    padding: 8px;
+    min-height: 58px;
+}
+.matrix-task-actions {
+    width:auto;
+    display:flex;
+    flex-direction:row;
+    justify-content:flex-end;
+    gap:3px;
+    margin-bottom:7px;
+}
+.matrix-task-actions button {
+    flex:0 0 28px;
+    width:28px;
+    height:25px;
+}
+.matrix-task-content {
+    display:flex;
+    align-items:flex-start;
+    gap:7px;
+    min-width:0;
+}
+.matrix-task-text {
+    padding-top:3px;
+}
+.matrix-check {
+    flex:0 0 28px;
+    width:28px !important;
+    height:25px !important;
+}
