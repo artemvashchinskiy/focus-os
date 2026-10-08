@@ -105,16 +105,18 @@ function Matrix({ tasks, onAdd, onToggle, onUpdate, onMove, onDelete }: MatrixPr
                                             </div>
                                         ) : (
                                             <>
-                                                <button type="button" className="matrix-check" onClick={() => onToggle(task.id)} aria-label={task.completed ? "Mark incomplete" : "Mark complete"} title={task.completed ? "Mark incomplete" : "Mark complete"}>
-                                                    <span className="matrix-checkbox">{task.completed ? "✓" : ""}</span>
-                                                </button>
-                                                <div className="matrix-task-actions" aria-label="Task actions">
-                                                    <button type="button" onClick={()=>onMove(task.id,-1)} disabled={index === 0} aria-label="Move task up" title="Move up">↑</button>
-                                                    <button type="button" onClick={()=>onMove(task.id,1)} disabled={index === quadrantTasks.length - 1} aria-label="Move task down" title="Move down">↓</button>
-                                                    <button type="button" onClick={()=>startEdit(task)} aria-label="Edit task" title="Edit">✎</button>
-                                                    <button type="button" onClick={() => onDelete(task.id)} aria-label="Delete task" title="Delete">×</button>
+                                                <div className="matrix-task-top">
+                                                    <button type="button" className="matrix-check" onClick={() => onToggle(task.id)} aria-label={task.completed ? "Mark incomplete" : "Mark complete"} title={task.completed ? "Mark incomplete" : "Mark complete"}>
+                                                        <span className="matrix-checkbox">{task.completed ? "✓" : ""}</span>
+                                                    </button>
+                                                    <div className="matrix-task-actions" aria-label="Task actions">
+                                                        <button type="button" onClick={()=>onMove(task.id,-1)} disabled={index === 0} aria-label="Move task up" title="Move up">↑</button>
+                                                        <button type="button" onClick={()=>onMove(task.id,1)} disabled={index === quadrantTasks.length - 1} aria-label="Move task down" title="Move down">↓</button>
+                                                        <button type="button" onClick={()=>startEdit(task)} aria-label="Edit task" title="Edit">✎</button>
+                                                        <button type="button" onClick={() => onDelete(task.id)} aria-label="Delete task" title="Delete">×</button>
+                                                    </div>
                                                 </div>
-                                                <span className="matrix-task-text">{task.text}</span>
+                                                <div className="matrix-task-text">{task.text}</div>
                                             </>
                                         )}
                                     </div>

@@ -121,19 +121,19 @@ function Expenses({ expenses, onAdd, onUpdate, onMove, onDelete }: ExpensesProps
                             </div>
                         ) : (
                             <>
-                                <div className="expense-main">
-                                    <strong>{expense.amount.toFixed(2)}</strong>
-                                    <div className="expense-details">
-                                        <span className="expense-meta">{expense.category} · {expense.date}</span>
-                                        <span className="expense-description">{expense.description || "No description"}</span>
-                                    </div>
-                                </div>
-
                                 <div className="expense-actions" aria-label="Expense actions">
                                     <button type="button" onClick={()=>onMove(expense.id,-1)} disabled={index === 0} aria-label="Move expense up" title="Move up">↑</button>
                                     <button type="button" onClick={()=>onMove(expense.id,1)} disabled={index === expenses.length - 1} aria-label="Move expense down" title="Move down">↓</button>
                                     <button type="button" onClick={()=>startEdit(expense)} aria-label="Edit expense" title="Edit">✎</button>
                                     <button type="button" onClick={() => onDelete(expense.id)} aria-label="Delete expense" title="Delete">×</button>
+                                </div>
+
+                                <div className="expense-main">
+                                    <strong>{expense.amount.toFixed(2)}</strong>
+                                    <div className="expense-info">
+                                        <span className="expense-meta">{expense.category} · {expense.date}</span>
+                                        <span className="expense-description">{expense.description || "No description"}</span>
+                                    </div>
                                 </div>
                             </>
                         )}
