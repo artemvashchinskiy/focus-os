@@ -278,14 +278,3 @@
         padding-right:0;
     }
 }
-
-.calendar-guide {
-    flex: 1 1 auto;
-    min-height: 220px;
-}
-
-@media (max-width: 900px) {
-    .calendar-guide {
-        min-height: 220px;
-    }
-}

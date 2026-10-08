@@ -36,10 +36,8 @@ function CalendarCell({
 
 
 
-    const safeNotes = Array.isArray(notes) ? notes : [];
-
     const dayNotes =
-        safeNotes.filter(
+        notes.filter(
             note=>note.date===date
         );
 
@@ -48,6 +46,12 @@ function CalendarCell({
     const hasNotes =
         dayNotes.length > 0;
 
+
+
+    const completedCount =
+        dayNotes.filter(
+            note=>note.completed
+        ).length;
 
     const today = new Date();
 
@@ -92,16 +96,33 @@ function CalendarCell({
             {
                 hasNotes &&
 
-                <div
-                    className="note-indicator"
-                    aria-label={`${dayNotes.length} note${dayNotes.length === 1 ? "" : "s"}`}
-                    title={`${dayNotes.length} note${dayNotes.length === 1 ? "" : "s"}`}
-                >
-                    <span className="note-dot">●</span>
-                    <small className="note-count">
-                        {dayNotes.length}
-                    </small>
+                <div className="note-indicator">
+
+                    <span>
+                        ●
+                    </span>
+
+                    {
+                        completedCount > 0
+
+                        ?
+
+                        <small>
+                            {completedCount}/{dayNotes.length}
+                        </small>
+
+                        :
+
+                        dayNotes.length > 1 &&
+
+                        <small>
+                            {dayNotes.length}
+                        </small>
+
+                    }
+
                 </div>
+
             }
 
 

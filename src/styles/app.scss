@@ -1268,56 +1268,101 @@ button:disabled {
     font-size:18px;
 
 }
-/* ==========================
-   CALENDAR / NOTES PLAN LAYOUT
-   Final overrides: keep the notes column scrollable and let the
-   calendar-side guide use the otherwise empty vertical space.
-========================== */
-.layout {
-    align-items: stretch;
+
+/* Matrix selection inside New/Edit Note */
+.matrix-note-field {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+    margin: 2px 0 8px;
 }
 
-.calendar-area {
-    min-height: calc(100vh - 110px);
-}
-
-.notes-list {
-    min-height: 0;
-    max-height: calc(100vh - 110px);
-    overflow-y: auto;
-    overflow-x: hidden;
-}
-
-.note-indicator {
-    top: 5px;
-    right: 5px;
-    bottom: auto;
-    padding: 2px 5px;
-    border: 1px solid var(--border);
-    border-radius: 999px;
-    background: var(--panel);
-    box-shadow: 0 1px 4px rgba(0,0,0,.08);
-}
-
-.note-indicator .note-dot {
-    font-size: 9px;
-}
-
-.note-indicator .note-count {
-    position: static;
-    font-size: 11px;
-    line-height: 1;
-    font-weight: 800;
+.matrix-note-label {
+    margin: 0;
+    font-size: 14px;
+    font-weight: 600;
     color: var(--text-h);
 }
 
-@media (max-width: 900px) {
-    .calendar-area {
-        min-height: 0;
+.matrix-note-row {
+    display: grid;
+    grid-template-columns: minmax(110px, 0.35fr) minmax(0, 1fr);
+    gap: 8px;
+}
+
+.matrix-note-select {
+    width: 100%;
+    box-sizing: border-box;
+    min-height: 40px;
+    padding: 9px 34px 9px 11px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    background: #fff;
+    color: var(--text-h);
+    font: inherit;
+    cursor: pointer;
+    transition: 0.15s ease;
+}
+
+.matrix-note-select:hover {
+    border-color: var(--accent);
+}
+
+.matrix-note-select:focus {
+    outline: 2px solid var(--accent);
+    outline-offset: 1px;
+}
+
+.matrix-note-select:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.matrix-note-hint {
+    font-size: 12px;
+    line-height: 1.4;
+    color: var(--text);
+}
+
+.note-card-matrix {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 9px;
+    padding: 8px 10px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    background: rgba(128, 128, 128, 0.06);
+}
+
+.note-card-matrix-label {
+    flex: 0 0 auto;
+    padding: 3px 7px;
+    border-radius: 999px;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--text);
+}
+
+.note-card-matrix-text {
+    min-width: 0;
+    font-size: 12px;
+    line-height: 1.35;
+    overflow-wrap: anywhere;
+    color: var(--text-h);
+}
+
+@media (max-width: 520px) {
+    .matrix-note-row {
+        grid-template-columns: 1fr;
     }
 
-    .notes-list {
-        max-height: none;
-        overflow: visible;
+    .note-card-matrix {
+        align-items: flex-start;
+        flex-direction: column;
     }
 }
