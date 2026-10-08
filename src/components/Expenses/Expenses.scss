@@ -92,6 +92,7 @@
 }
 
 .expense-row{
+    position:relative;
     display:flex;
     flex-direction:column;
     align-items:stretch;
@@ -104,13 +105,17 @@
 }
 
 .expense-actions{
+    position:absolute;
+    top:9px;
+    right:9px;
+    z-index:2;
     display:flex !important;
     flex-direction:row !important;
-    flex-wrap:nowrap;
+    flex-wrap:nowrap !important;
     align-items:center;
     justify-content:flex-end;
     gap:3px;
-    width:100%;
+    width:max-content !important;
     min-height:25px;
 }
 
@@ -145,6 +150,7 @@
     align-items:start;
     gap:8px;
     min-width:0;
+    padding-top:30px;
 }
 
 .expense-main>strong{
