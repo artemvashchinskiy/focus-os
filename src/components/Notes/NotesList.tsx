@@ -14,13 +14,15 @@ interface NotesListProps {
 }
 
 function NotesList({ notes,onDelete,onMove,onEdit,onTick,onComplete,touch,onStart,onPause }:NotesListProps){
+    const safeNotes = Array.isArray(notes) ? notes : [];
+
     return(
         <aside className="notes-list">
             <div className="header">Notes</div>
-            {notes.length === 0 ?
+            {safeNotes.length === 0 ?
                 <div className="small">No notes yet</div>
                 :
-                notes.map(note =>
+                safeNotes.map(note =>
                     <NoteCard
                         key={note.id}
                         note={note}
