@@ -1373,3 +1373,23 @@ button:disabled {
         flex-direction: column;
     }
 }
+
+/* Desktop: Notes ends level with the calendar plus the compact guide preview. */
+@media (min-width: 901px) {
+    .body.layout {
+        align-items: stretch;
+    }
+
+    .body.layout > .calendar-area {
+        min-height: 0;
+    }
+
+    .body.layout > .notes-list {
+        align-self: stretch;
+        height: 100%;
+        min-height: 0;
+        max-height: none;
+        box-sizing: border-box;
+        overflow-y: auto;
+    }
+}

@@ -289,98 +289,18 @@
     }
 }
 
-/* Keep the desktop Notes panel level with the bottom of the calendar guide. */
+/* Keep only the guide heading, introduction and first section heading in the
+   desktop preview; the rest of the guide remains available by scrolling. */
 @media (min-width: 901px) {
-    .layout {
-        align-items: stretch;
-    }
-
-    .calendar-area {
-        height: calc(100vh - 190px);
-        min-height: 520px;
-    }
-
     .calendar-guide {
-        flex: 1 1 260px;
-        min-height: 220px;
-        max-height: none;
-    }
-
-    .notes-list {
-        align-self: stretch;
-        height: calc(100vh - 190px);
-        max-height: none;
-        box-sizing: border-box;
-        overflow-y: auto;
-    }
-}
-
-/* On tablet/mobile, place Notes before the guide so the guide ends immediately above the footer. */
-@media (max-width: 900px) {
-    .layout {
-        display: flex;
-        flex-direction: column;
-        align-items: stretch;
-    }
-
-    .calendar-area {
-        display: contents;
-    }
-
-    .calendar {
-        order: 1;
-    }
-
-    .show-all-notes {
-        order: 2;
-    }
-
-    .note-panel {
-        order: 3;
-    }
-
-    .notes-list {
-        order: 4;
-        width: 100%;
-        max-height: 60vh;
-        box-sizing: border-box;
-    }
-
-    .calendar-guide {
-        order: 5;
-        flex: 0 0 auto;
+        flex: 0 0 170px;
+        height: 170px;
         min-height: 0;
         max-height: none;
-        height: auto;
-        overflow: visible;
-        margin-top: 0;
     }
 
     .calendar-guide-article {
-        flex: 0 0 auto;
         min-height: 0;
-        max-height: none;
-        overflow: visible;
-    }
-}
-
-@media (max-width: 550px) {
-    .notes-list {
-        max-height: 55vh;
-    }
-
-    .calendar-guide {
-        padding: 14px;
-    }
-}
-
-@media (max-width: 360px) {
-    .calendar-guide {
-        min-height: 0;
-        max-height: none;
-    }
-
-    .notes-list {
-        max-height: 55vh;
+        overflow-y: auto;
     }
 }
