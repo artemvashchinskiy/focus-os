@@ -1,8 +1,8 @@
 .calendar-guide{
-    flex:1 1 260px;
-    min-height:260px;
+    flex:1 1 280px;
+    min-height:280px;
     min-width:0;
-    margin-top:0;
+    margin-top:16px;
     padding:18px;
     box-sizing:border-box;
     background:var(--panel);
@@ -221,14 +221,9 @@
     .note-indicator small{ font-size:8px; }
 
     .calendar-guide{
-        flex:0 1 240px;
-        min-height:220px;
+        min-height:240px;
         max-height:48vh;
         padding:14px;
-    }
-
-    .notes-list{
-        max-height:48vh;
     }
 
     .calendar-guide-header h2{ font-size:16px; }
@@ -274,113 +269,12 @@
     .note-indicator small{ font-size:7px; }
 
     .calendar-guide{
-        flex:0 1 210px;
-        min-height:200px;
+        min-height:210px;
         max-height:46vh;
         padding:12px;
     }
 
-    .notes-list{
-        max-height:46vh;
-    }
-
     .calendar-guide-article{
         padding-right:0;
-    }
-}
-
-/* Keep the desktop Notes panel level with the bottom of the calendar guide. */
-@media (min-width: 901px) {
-    .layout {
-        align-items: stretch;
-    }
-
-    .calendar-area {
-        height: calc(100vh - 190px);
-        min-height: 520px;
-    }
-
-    .calendar-guide {
-        flex: 1 1 260px;
-        min-height: 220px;
-        max-height: none;
-    }
-
-    .notes-list {
-        align-self: stretch;
-        height: calc(100vh - 190px);
-        max-height: none;
-        box-sizing: border-box;
-        overflow-y: auto;
-    }
-}
-
-/* On tablet/mobile, place Notes before the guide so the guide ends immediately above the footer. */
-@media (max-width: 900px) {
-    .layout {
-        display: flex;
-        flex-direction: column;
-        align-items: stretch;
-    }
-
-    .calendar-area {
-        display: contents;
-    }
-
-    .calendar {
-        order: 1;
-    }
-
-    .show-all-notes {
-        order: 2;
-    }
-
-    .note-panel {
-        order: 3;
-    }
-
-    .notes-list {
-        order: 4;
-        width: 100%;
-        max-height: 60vh;
-        box-sizing: border-box;
-    }
-
-    .calendar-guide {
-        order: 5;
-        flex: 0 0 auto;
-        min-height: 0;
-        max-height: none;
-        height: auto;
-        overflow: visible;
-        margin-top: 0;
-    }
-
-    .calendar-guide-article {
-        flex: 0 0 auto;
-        min-height: 0;
-        max-height: none;
-        overflow: visible;
-    }
-}
-
-@media (max-width: 550px) {
-    .notes-list {
-        max-height: 55vh;
-    }
-
-    .calendar-guide {
-        padding: 14px;
-    }
-}
-
-@media (max-width: 360px) {
-    .calendar-guide {
-        min-height: 0;
-        max-height: none;
-    }
-
-    .notes-list {
-        max-height: 55vh;
     }
 }

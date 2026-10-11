@@ -417,30 +417,23 @@ textarea{
 
 
 
-// Main workspace: calendar + compact guide on the left, independently scrolling notes on the right.
+// Layout
+
 .layout{
     display:grid;
     grid-template-columns:minmax(320px,1.4fr) minmax(280px,0.8fr);
     gap:20px;
-    align-items:stretch;
+    align-items:start;
     padding:20px;
 }
 
 .calendar-area{
-    min-width:0;
-    min-height:0;
     display:flex;
     flex-direction:column;
     gap:16px;
 }
 
 .notes-list{
-    min-width:0;
-    min-height:0;
-    max-height:calc(100vh - 150px);
-    align-self:start;
-    overflow-y:auto;
-    overflow-x:hidden;
     background:var(--panel);
     border:1px solid var(--border);
     border-radius:18px;
