@@ -278,32 +278,3 @@
         padding-right:0;
     }
 }
-
-
-/* The guide is a fixed-height panel; only its article content scrolls. */
-.calendar-guide {
-    box-sizing: border-box;
-    min-height: 0;
-    overflow: hidden;
-}
-
-.calendar-guide-article {
-    min-height: 0;
-    overflow-y: auto;
-    overscroll-behavior: contain;
-    scrollbar-width: thin;
-}
-
-.calendar-guide-article::-webkit-scrollbar {
-    display: initial;
-    width: 6px;
-}
-
-/* Keep the same fixed guide viewport on narrow screens; the article scrolls inside it. */
-@media (max-width: 900px) {
-    .calendar-guide {
-        height: 300px;
-        min-height: 0;
-        max-height: 300px;
-    }
-}
