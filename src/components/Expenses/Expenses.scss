@@ -95,7 +95,7 @@
     display:flex;
     flex-direction:column;
     align-items:stretch;
-    gap:7px;
+    gap:6px;
     padding:9px;
     border:1px solid var(--border);
     border-radius:10px;
@@ -103,22 +103,26 @@
     min-width:0;
 }
 
+.expense-content{display:flex;flex-direction:column;gap:3px;min-width:0;width:100%;}
+
 .expense-main{
     display:grid;
-    grid-template-columns:65px minmax(0,1fr);
+    grid-template-columns:minmax(65px,auto) minmax(0,1fr);
+    align-items:baseline;
     gap:8px;
     min-width:0;
-    align-items:start;
+    width:100%;
 }
 
 .expense-main>strong{
-    font-size:14px;
+    font-size:16px;
     overflow-wrap:anywhere;
 }
 
 .expense-description,
 .expense-meta{
     display:block;
+    min-width:0;
     overflow-wrap:anywhere;
     text-align:left;
 }
@@ -126,12 +130,13 @@
 .expense-description{
     font-size:13px;
     line-height:1.45;
+    padding-left:73px;
 }
 
 .expense-meta{
-    margin-top:2px;
+    margin-top:0;
     color:#888;
-    font-size:11px;
+    font-size:12px;
 }
 
 .expense-actions{
@@ -140,14 +145,15 @@
     flex-wrap:nowrap;
     align-items:center;
     justify-content:flex-end;
-    gap:3px;
+    gap:4px;
     width:100%;
     min-width:0;
 }
 
 .expense-actions button{
-    flex:0 0 32px;
-    width:32px;
+    flex:0 0 28px;
+    width:28px;
+    min-width:28px;
     height:25px;
     padding:0;
     border:1px solid var(--border);
@@ -228,17 +234,14 @@
 
 @media(max-width:520px){
     .expenses-summary{ grid-template-columns:1fr; }
-
-    .expense-main{
-        grid-template-columns:minmax(52px,65px) minmax(0,1fr);
-    }
+    .expense-main{ grid-template-columns:minmax(58px,auto) minmax(0,1fr); }
+    .expense-description{ padding-left:66px; }
 }
 
 @media(max-width:360px){
-    .expense-actions button{
-        flex-basis:30px;
-        width:30px;
-    }
+    .expense-actions button{ flex-basis:26px; width:26px; min-width:26px; }
+    .expense-main{ grid-template-columns:minmax(54px,auto) minmax(0,1fr); gap:6px; }
+    .expense-description{ padding-left:60px; }
 }
 
 .expenses-categories{display:flex;flex-direction:column;gap:6px;padding:10px;border:1px solid var(--border);border-radius:10px;background:var(--panel);}

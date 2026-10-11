@@ -59,10 +59,10 @@ function WorkspaceSidebar({
                 </div>
 
                 <nav className="workspace-nav">
-                    <button type="button" className={view === "notes" ? "active" : ""} onClick={()=>onViewChange("notes")}>📝 Notes</button>
-                    <button type="button" className={view === "matrix" ? "active" : ""} onClick={()=>onViewChange("matrix")}>☐ Matrix</button>
-                    <button type="button" className={view === "expenses" ? "active" : ""} onClick={()=>onViewChange("expenses")}>€ Expenses</button>
                     <button type="button" className={view === "goals" ? "active" : ""} onClick={()=>onViewChange("goals")}>◎ Goals</button>
+                    <button type="button" className={view === "matrix" ? "active" : ""} onClick={()=>onViewChange("matrix")}>☐ Matrix</button>
+                    <button type="button" className={view === "notes" ? "active" : ""} onClick={()=>onViewChange("notes")}>📝 Notes</button>
+                    <button type="button" className={view === "expenses" ? "active" : ""} onClick={()=>onViewChange("expenses")}>€ Expenses</button>
                 </nav>
 
                 <div className="workspace-sidebar-content">
