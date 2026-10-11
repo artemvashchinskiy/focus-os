@@ -705,6 +705,34 @@ function App() {
         touch();
     }
 
+    function toggleGoal(id: number) {
+        setGoals(prev => prev.map(goal => goal.id === id ? { ...goal, completed: !goal.completed, updatedAt: Date.now() } : goal));
+        touch();
+    }
+
+    function updateGoal(id: number, text: string, category: GoalCategory) {
+        setGoals(prev => prev.map(goal => goal.id === id ? { ...goal, text, category, updatedAt: Date.now() } : goal));
+        touch();
+    }
+
+    function moveGoal(id: number, direction: -1 | 1) {
+        setGoals(prev => {
+            const index = prev.findIndex(goal => goal.id === id);
+            if (index < 0) return prev;
+            const goal = prev[index];
+            const siblings = prev.map((item, originalIndex) => ({ item, originalIndex })).filter(entry => entry.item.period === goal.period && entry.item.periodKey === goal.periodKey);
+            const siblingIndex = siblings.findIndex(entry => entry.item.id === id);
+            const target = siblingIndex + direction;
+            if (target < 0 || target >= siblings.length) return prev;
+            const next = [...prev];
+            const a = siblings[siblingIndex].originalIndex;
+            const b = siblings[target].originalIndex;
+            [next[a], next[b]] = [next[b], next[a]];
+            return next;
+        });
+        touch();
+    }
+
     function handleLogout() {
         setNotes([]);
         setPanelOpen(false);
@@ -1352,6 +1380,9 @@ function App() {
                 goalDate={selectedDate ? new Date(`${selectedDate}T12:00:00`) : currentDate}
                 onAddGoal={addGoal}
                 onDeleteGoal={deleteGoal}
+                onToggleGoal={toggleGoal}
+                onUpdateGoal={updateGoal}
+                onMoveGoal={moveGoal}
             />
 
             <Sidebar

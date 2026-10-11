@@ -36,6 +36,9 @@ interface WorkspaceSidebarProps {
     goalDate:Date;
     onAddGoal:(text:string,period:GoalPeriod,periodKey:string,category:GoalCategory)=>void;
     onDeleteGoal:(id:number)=>void;
+    onToggleGoal:(id:number)=>void;
+    onUpdateGoal:(id:number,text:string,category:GoalCategory)=>void;
+    onMoveGoal:(id:number,direction:-1|1)=>void;
 }
 
 function WorkspaceSidebar({
@@ -43,7 +46,7 @@ function WorkspaceSidebar({
     freeNotes,onAddFreeNote,onUpdateFreeNote,onDeleteFreeNote,onMoveFreeNote,
     matrixTasks,onAddMatrixTask,onToggleMatrixTask,onUpdateMatrixTask,onMoveMatrixTask,onDeleteMatrixTask,
     expenses,onAddExpense,onUpdateExpense,onMoveExpense,onDeleteExpense,
-    goals,goalDate,onAddGoal,onDeleteGoal
+    goals,goalDate,onAddGoal,onDeleteGoal,onToggleGoal,onUpdateGoal,onMoveGoal
 }:WorkspaceSidebarProps){
     return (
         <>
@@ -93,6 +96,9 @@ function WorkspaceSidebar({
                         date={goalDate}
                         onAdd={onAddGoal}
                         onDelete={onDeleteGoal}
+                        onToggle={onToggleGoal}
+                        onUpdate={onUpdateGoal}
+                        onMove={onMoveGoal}
                     />}
                 </div>
             </aside>
