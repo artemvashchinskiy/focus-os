@@ -127,12 +127,13 @@ function Expenses({ expenses, onAdd, onUpdate, onMove, onDelete }: ExpensesProps
                                     <button type="button" onClick={()=>startEdit(expense)} aria-label="Edit expense" title="Edit">✎</button>
                                     <button type="button" onClick={() => onDelete(expense.id)} aria-label="Delete expense" title="Delete">×</button>
                                 </div>
-                                <div className="expense-content">
-                                    <div className="expense-main">
-                                        <strong>{expense.amount.toFixed(2)}</strong>
+
+                                <div className="expense-main">
+                                    <strong>{expense.amount.toFixed(2)}</strong>
+                                    <div className="expense-details">
                                         <span className="expense-meta">{expense.category} · {expense.date}</span>
+                                        <span className="expense-description">{expense.description || "No description"}</span>
                                     </div>
-                                    <span className="expense-description">{expense.description || "No description"}</span>
                                 </div>
                             </>
                         )}
