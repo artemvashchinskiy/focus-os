@@ -1,8 +1,8 @@
 .calendar-guide{
-    flex:1 1 280px;
-    min-height:280px;
+    flex:1 1 260px;
+    min-height:260px;
     min-width:0;
-    margin-top:16px;
+    margin-top:0;
     padding:18px;
     box-sizing:border-box;
     background:var(--panel);
@@ -221,9 +221,14 @@
     .note-indicator small{ font-size:8px; }
 
     .calendar-guide{
-        min-height:240px;
+        flex:0 1 240px;
+        min-height:220px;
         max-height:48vh;
         padding:14px;
+    }
+
+    .notes-list{
+        max-height:48vh;
     }
 
     .calendar-guide-header h2{ font-size:16px; }
@@ -269,9 +274,14 @@
     .note-indicator small{ font-size:7px; }
 
     .calendar-guide{
-        min-height:210px;
+        flex:0 1 210px;
+        min-height:200px;
         max-height:46vh;
         padding:12px;
+    }
+
+    .notes-list{
+        max-height:46vh;
     }
 
     .calendar-guide-article{

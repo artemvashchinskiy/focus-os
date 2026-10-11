@@ -705,34 +705,6 @@ function App() {
         touch();
     }
 
-    function toggleGoal(id: number) {
-        setGoals(prev => prev.map(goal => goal.id === id ? { ...goal, completed: !goal.completed, updatedAt: Date.now() } : goal));
-        touch();
-    }
-
-    function updateGoal(id: number, text: string, category: GoalCategory) {
-        setGoals(prev => prev.map(goal => goal.id === id ? { ...goal, text, category, updatedAt: Date.now() } : goal));
-        touch();
-    }
-
-    function moveGoal(id: number, direction: -1 | 1) {
-        setGoals(prev => {
-            const index = prev.findIndex(goal => goal.id === id);
-            if (index < 0) return prev;
-            const goal = prev[index];
-            const siblings = prev.map((item, originalIndex) => ({ item, originalIndex })).filter(entry => entry.item.period === goal.period && entry.item.periodKey === goal.periodKey);
-            const siblingIndex = siblings.findIndex(entry => entry.item.id === id);
-            const target = siblingIndex + direction;
-            if (target < 0 || target >= siblings.length) return prev;
-            const next = [...prev];
-            const a = siblings[siblingIndex].originalIndex;
-            const b = siblings[target].originalIndex;
-            [next[a], next[b]] = [next[b], next[a]];
-            return next;
-        });
-        touch();
-    }
-
     function handleLogout() {
         setNotes([]);
         setPanelOpen(false);
@@ -1334,6 +1306,81 @@ function App() {
                         />
                     )}
 
+
+
+                    <section
+                        className="calendar-guide"
+                        aria-label="How to use Focus OS"
+                    >
+                        <div className="calendar-guide-header">
+                            <span className="calendar-guide-eyebrow">
+                                Focus OS · Practical Guide
+                            </span>
+
+                            <h2>
+                                Turn the calendar into a working plan
+                            </h2>
+
+                            <p>
+                                Use the calendar for commitments,
+                                notes for details, and the other
+                                workspace tools only when they add value.
+                            </p>
+                        </div>
+
+                        <article className="calendar-guide-article">
+                            <h3>1. Start with the calendar</h3>
+                            <p>
+                                Click a day to create a note for that date.
+                                Put appointments, deadlines, important calls
+                                and other things that genuinely belong to a
+                                particular day on the calendar.
+                            </p>
+
+                            <h3>2. Write the details, not just the title</h3>
+                            <p>
+                                Use the note itself for the information you
+                                need when the day arrives. A useful entry
+                                should reduce the amount of remembering you
+                                have to do later.
+                            </p>
+
+                            <h3>3. Plan before you execute</h3>
+                            <p>
+                                Brian Tracy's published time-management
+                                material emphasizes planning the coming day,
+                                making a list and identifying the most
+                                important task before starting work.
+                            </p>
+
+                            <h3>4. Review instead of constantly rebuilding</h3>
+                            <p>
+                                David Allen's Getting Things Done method puts
+                                strong emphasis on regular reviews, including
+                                checking previous and upcoming calendar data
+                                and the actions they trigger.
+                            </p>
+
+                            <h3>5. A simple Focus OS routine</h3>
+                            <p>
+                                Before finishing the day, check tomorrow's
+                                calendar. Add the important tasks and
+                                information you already know. In the morning,
+                                open the calendar, choose the day's real
+                                priority, and work through your notes instead
+                                of trying to remember everything from your head.
+                            </p>
+
+                            <h3>6. Keep the system small</h3>
+                            <p>
+                                The calendar is the hard landscape: things
+                                that must happen on a particular day. Notes
+                                hold useful detail. Matrix, Expenses and the
+                                other workspace tools are there when you
+                                actually need them.
+                            </p>
+                        </article>
+                    </section>
                 </div>
 
                 <NotesList
@@ -1380,9 +1427,6 @@ function App() {
                 goalDate={selectedDate ? new Date(`${selectedDate}T12:00:00`) : currentDate}
                 onAddGoal={addGoal}
                 onDeleteGoal={deleteGoal}
-                onToggleGoal={toggleGoal}
-                onUpdateGoal={updateGoal}
-                onMoveGoal={moveGoal}
             />
 
             <Sidebar
@@ -1484,79 +1528,7 @@ function App() {
                     setAboutOpen(false)
                 }
             />
-                    <section
-                        className="calendar-guide"
-                        aria-label="How to use Focus OS"
-                    >
-                        <div className="calendar-guide-header">
-                            <span className="calendar-guide-eyebrow">
-                                Focus OS · Practical Guide
-                            </span>
 
-                            <h2>
-                                Turn the calendar into a working plan
-                            </h2>
-
-                            <p>
-                                Use the calendar for commitments,
-                                notes for details, and the other
-                                workspace tools only when they add value.
-                            </p>
-                        </div>
-
-                        <article className="calendar-guide-article">
-                            <h3>1. Start with the calendar</h3>
-                            <p>
-                                Click a day to create a note for that date.
-                                Put appointments, deadlines, important calls
-                                and other things that genuinely belong to a
-                                particular day on the calendar.
-                            </p>
-
-                            <h3>2. Write the details, not just the title</h3>
-                            <p>
-                                Use the note itself for the information you
-                                need when the day arrives. A useful entry
-                                should reduce the amount of remembering you
-                                have to do later.
-                            </p>
-
-                            <h3>3. Plan before you execute</h3>
-                            <p>
-                                Brian Tracy's published time-management
-                                material emphasizes planning the coming day,
-                                making a list and identifying the most
-                                important task before starting work.
-                            </p>
-
-                            <h3>4. Review instead of constantly rebuilding</h3>
-                            <p>
-                                David Allen's Getting Things Done method puts
-                                strong emphasis on regular reviews, including
-                                checking previous and upcoming calendar data
-                                and the actions they trigger.
-                            </p>
-
-                            <h3>5. A simple Focus OS routine</h3>
-                            <p>
-                                Before finishing the day, check tomorrow's
-                                calendar. Add the important tasks and
-                                information you already know. In the morning,
-                                open the calendar, choose the day's real
-                                priority, and work through your notes instead
-                                of trying to remember everything from your head.
-                            </p>
-
-                            <h3>6. Keep the system small</h3>
-                            <p>
-                                The calendar is the hard landscape: things
-                                that must happen on a particular day. Notes
-                                hold useful detail. Matrix, Expenses and the
-                                other workspace tools are there when you
-                                actually need them.
-                            </p>
-                        </article>
-                    </section>
 
             <footer className="app-footer">
                 <span>
