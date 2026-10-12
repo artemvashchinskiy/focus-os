@@ -17,5 +17,4 @@ export interface Goal {
     category: GoalCategory;
     createdAt: number;
     updatedAt: number;
-    completed?: boolean;
 }

@@ -11,13 +11,9 @@ import { createFocusOSBackup, restoreFocusOSBackup } from "./appBackupService";
 
 const APP_KEY = "mxmw4fjmtuduqkr";
 
-// Keep the production callback deterministic. This exact URI must also be
-// registered in the Dropbox app console; code cannot bypass Dropbox's URI check.
 const REDIRECT_URI =
     import.meta.env.VITE_DROPBOX_REDIRECT_URI ||
-    (window.location.hostname === "myfocusos.vercel.app"
-        ? "https://myfocusos.vercel.app/"
-        : window.location.origin);
+    window.location.origin;
 
 let dropboxLoginPromise: Promise<boolean> | null = null;
 
