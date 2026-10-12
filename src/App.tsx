@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import useAuth from "./hooks/useAuth";
 import useLocalStorage from "./hooks/useLocalStorage";
@@ -69,6 +69,20 @@ const PANEL_OPEN_EVENT = "focus-os:panel-open";
 const PANEL_CLOSE_ALL_EVENT = "focus-os:panel-close-all";
 
 function App() {
+    const calendarAreaRef = useRef<HTMLDivElement>(null);
+    const [calendarAreaHeight, setCalendarAreaHeight] = useState<number | null>(null);
+
+    useEffect(() => {
+        const element = calendarAreaRef.current;
+        if (!element || typeof ResizeObserver === "undefined") return;
+        const observer = new ResizeObserver(() => {
+            setCalendarAreaHeight(element.getBoundingClientRect().height);
+        });
+        observer.observe(element);
+        setCalendarAreaHeight(element.getBoundingClientRect().height);
+        return () => observer.disconnect();
+    }, []);
+
     const [sidebarOpen, setSidebarOpen] = useState(false);
     const [workspaceOpen, setWorkspaceOpen] = useState(false);
     const [workspaceView, setWorkspaceView] =
@@ -697,6 +711,42 @@ function App() {
         touch();
     }
 
+    function toggleGoal(id: number) {
+        setGoals(prev => prev.map(goal => goal.id === id
+            ? { ...goal, completed: !goal.completed, updatedAt: Date.now() }
+            : goal
+        ));
+        touch();
+    }
+
+    function updateGoal(id: number, text: string) {
+        const value = text.trim();
+        if (!value) return;
+        setGoals(prev => prev.map(goal => goal.id === id
+            ? { ...goal, text: value, updatedAt: Date.now() }
+            : goal
+        ));
+        touch();
+    }
+
+    function moveGoal(id: number, direction: -1 | 1) {
+        setGoals(prev => {
+            const index = prev.findIndex(goal => goal.id === id);
+            if (index < 0) return prev;
+            const goal = prev[index];
+            const siblings = prev
+                .map((item, i) => ({ item, i }))
+                .filter(({ item }) => item.period === goal.period && item.periodKey === goal.periodKey);
+            const siblingIndex = siblings.findIndex(({ item }) => item.id === id);
+            const target = siblings[siblingIndex + direction];
+            if (!target) return prev;
+            const next = [...prev];
+            [next[index], next[target.i]] = [next[target.i], next[index]];
+            return next;
+        });
+        touch();
+    }
+
     function deleteGoal(id: number) {
         setGoals(prev => prev.filter(goal => goal.id !== id));
         setNotes(prev => prev.map(note =>
@@ -1259,7 +1309,7 @@ function App() {
             </div>
 
             <div className="body layout">
-                <div className="calendar-area">
+                <div className="calendar-area" ref={calendarAreaRef}>
                     <Calendar
                         notes={notes}
                         selectedDate={selectedDate}
@@ -1270,17 +1320,6 @@ function App() {
                             setPanelOpen(true);
                         }}
                     />
-
-                    {selectedDate && (
-                        <button
-                            className="show-all-notes"
-                            onClick={() =>
-                                setSelectedDate(null)
-                            }
-                        >
-                            Show all notes
-                        </button>
-                    )}
 
                     {panelOpen && (
                         <NotePanel
@@ -1306,8 +1345,21 @@ function App() {
                         />
                     )}
 
+                    {selectedDate && (
+                        <button
+                            className="show-all-notes"
+                            onClick={() => setSelectedDate(null)}
+                        >
+                            Show all notes
+                        </button>
+                    )}
+
                 </div>
 
+                <div
+                    className="notes-panel-scroll"
+                    style={calendarAreaHeight !== null ? { height: `${calendarAreaHeight}px` } : undefined}
+                >
                 <NotesList
                     notes={visibleNotes}
                     onDelete={deleteNote}
@@ -1324,6 +1376,7 @@ function App() {
                     onStart={startTimer}
                     onPause={pauseTimer}
                 />
+                </div>
             </div>
 
             <WorkspaceSidebar
@@ -1351,6 +1404,9 @@ function App() {
                 goals={goals}
                 goalDate={selectedDate ? new Date(`${selectedDate}T12:00:00`) : currentDate}
                 onAddGoal={addGoal}
+                onToggleGoal={toggleGoal}
+                onUpdateGoal={updateGoal}
+                onMoveGoal={moveGoal}
                 onDeleteGoal={deleteGoal}
             />
 

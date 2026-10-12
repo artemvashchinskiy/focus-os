@@ -2,10 +2,6 @@ import { useEffect, useState } from "react";
 import "./Sidebar.scss";
 
 import { connectDropbox } from "../../services/dropboxService";
-import {
-    connectGoogleDrive,
-    isGoogleDriveConnected
-} from "../../services/googleDriveService";
 import DangerZone from "../DangerZone/DangerZone";
 
 interface SidebarProps {
@@ -40,25 +36,10 @@ function Sidebar({
     onAboutOpen
 }:SidebarProps){
     const [connecting,setConnecting] = useState(false);
-    const [googleConnected,setGoogleConnected] =
-        useState(isGoogleDriveConnected());
-    const [googleConnecting,setGoogleConnecting] = useState(false);
-
     useEffect(()=>{
         if(dropboxConnected) setConnecting(false);
     },[dropboxConnected]);
 
-    async function handleGoogleConnect(){
-        try{
-            setGoogleConnecting(true);
-            await connectGoogleDrive();
-            setGoogleConnected(true);
-        }catch(error){
-            console.error("Google Drive connection failed:",error);
-        }finally{
-            setGoogleConnecting(false);
-        }
-    }
 
     return (
         <>
@@ -133,34 +114,11 @@ function Sidebar({
                             </div>
                         )}
 
-                        {!googleConnected ? (
-                            <button
-                                disabled={googleConnecting}
-                                onClick={handleGoogleConnect}
-                            >
-                                {
-                                    googleConnecting
-                                        ? "Connecting..."
-                                        : "Google Drive"
-                                }
-                            </button>
-                        ) : (
-                            <div className="dropbox-bar">
-                                <button
-                                    className="dropbox-main"
-                                    disabled
-                                >
-                                    Google Drive ✓
-                                </button>
+                        <button type="button" disabled title="Google Drive backup is temporarily disabled">
+                            Google Drive (disabled)
+                        </button>
 
-                                <button onClick={onGoogleDriveBackup}>
-                                    Backup
-                                </button>
-
-                                <button onClick={onGoogleDriveRestore}>
-                                    Restore
-                                </button>
-                            </div>
+                    </div>
                         )}
                     </div>
 

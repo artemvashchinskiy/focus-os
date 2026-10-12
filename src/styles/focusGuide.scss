@@ -278,3 +278,92 @@
         padding-right:0;
     }
 }
+
+
+/* Workspace balance: the guide is a compact, independently scrollable left-column section. */
+.layout {
+    align-items: stretch;
+}
+.calendar-area {
+    min-width: 0;
+}
+.calendar-guide {
+    flex: 0 0 340px;
+    height: 340px;
+    min-height: 0;
+    max-height: none;
+    margin-top: 0;
+    overflow: hidden;
+}
+.calendar-guide-article {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-y: auto;
+    overflow-x: hidden;
+    overscroll-behavior: contain;
+    scrollbar-width: thin;
+}
+.notes-panel-scroll {
+    min-width: 0;
+    min-height: 0;
+    overflow-y: auto;
+    overflow-x: hidden;
+    scrollbar-width: thin;
+    overscroll-behavior: contain;
+}
+.notes-panel-scroll > .notes-list {
+    min-height: 100%;
+    height: 100%;
+    box-sizing: border-box;
+    overflow: visible;
+}
+@media (max-width: 900px) {
+    .layout {
+        grid-template-columns: minmax(0, 1fr);
+        align-items: start;
+    }
+    .notes-list {
+        order: initial !important;
+    }
+    .notes-panel-scroll {
+        height: auto !important;
+        max-height: 65vh;
+    }
+    .notes-panel-scroll > .notes-list {
+        height: auto;
+        min-height: 0;
+    }
+    .calendar-guide {
+        flex-basis: 300px;
+        height: 300px;
+        max-height: none;
+    }
+}
+@media (max-width: 550px) {
+    .calendar-guide {
+        flex-basis: 300px;
+        height: 300px;
+        padding: 12px;
+    }
+}
+
+@media (max-width: 900px) {
+    .calendar-area {
+        display: contents;
+    }
+    .calendar {
+        order: 1;
+    }
+    .notes-panel-scroll {
+        order: 2;
+    }
+    .show-all-notes {
+        order: 3;
+    }
+    .note-panel {
+        order: 4;
+    }
+    .calendar-guide {
+        order: 5;
+    }
+}
