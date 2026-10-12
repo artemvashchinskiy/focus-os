@@ -13,7 +13,7 @@ const APP_KEY = "mxmw4fjmtuduqkr";
 
 const REDIRECT_URI =
     import.meta.env.VITE_DROPBOX_REDIRECT_URI ||
-    "https://myfocusos.vercel.app/";
+    window.location.origin;
 
 let dropboxLoginPromise: Promise<boolean> | null = null;
 
