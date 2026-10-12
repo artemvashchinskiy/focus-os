@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import useAuth from "./hooks/useAuth";
 import useLocalStorage from "./hooks/useLocalStorage";
@@ -69,6 +69,20 @@ const PANEL_OPEN_EVENT = "focus-os:panel-open";
 const PANEL_CLOSE_ALL_EVENT = "focus-os:panel-close-all";
 
 function App() {
+    const calendarAreaRef = useRef<HTMLDivElement>(null);
+    const [calendarAreaHeight, setCalendarAreaHeight] = useState(0);
+
+    useEffect(() => {
+        const element = calendarAreaRef.current;
+        if (!element) return;
+        const observer = new ResizeObserver(() => {
+            setCalendarAreaHeight(element.getBoundingClientRect().height);
+        });
+        observer.observe(element);
+        setCalendarAreaHeight(element.getBoundingClientRect().height);
+        return () => observer.disconnect();
+    }, []);
+
     const [sidebarOpen, setSidebarOpen] = useState(false);
     const [workspaceOpen, setWorkspaceOpen] = useState(false);
     const [workspaceView, setWorkspaceView] =
@@ -1259,7 +1273,7 @@ function App() {
             </div>
 
             <div className="body layout">
-                <div className="calendar-area">
+                <div className="calendar-area" ref={calendarAreaRef}>
                     <Calendar
                         notes={notes}
                         selectedDate={selectedDate}
@@ -1306,8 +1320,30 @@ function App() {
                         />
                     )}
 
+                    <section className="calendar-guide" aria-label="How to use Focus OS">
+                        <div className="calendar-guide-header">
+                            <span className="calendar-guide-eyebrow">Focus OS · Practical Guide</span>
+                            <h2>Turn the calendar into a working plan</h2>
+                            <p>Use the calendar for commitments, notes for details, and the other workspace tools only when they add value.</p>
+                        </div>
+                        <article className="calendar-guide-article">
+                            <h3>1. Start with the calendar</h3>
+                            <p>Click a day to create a note for that date. Put appointments, deadlines, important calls and other things that genuinely belong to a particular day on the calendar.</p>
+                            <h3>2. Write the details, not just the title</h3>
+                            <p>Use the note itself for the information you need when the day arrives. A useful entry should reduce the amount of remembering you have to do later.</p>
+                            <h3>3. Plan before you execute</h3>
+                            <p>Brian Tracy's published time-management material emphasizes planning the coming day, making a list and identifying the most important task before starting work.</p>
+                            <h3>4. Review instead of constantly rebuilding</h3>
+                            <p>David Allen's Getting Things Done method puts strong emphasis on regular reviews, including checking previous and upcoming calendar data and the actions they trigger.</p>
+                            <h3>5. A simple Focus OS routine</h3>
+                            <p>Before finishing the day, check tomorrow's calendar. Add the important tasks and information you already know. In the morning, open the calendar, choose the day's real priority, and work through your notes instead of trying to remember everything from your head.</p>
+                            <h3>6. Keep the system small</h3>
+                            <p>The calendar is the hard landscape: things that must happen on a particular day. Notes hold useful detail. Matrix, Expenses and the other workspace tools are there when you actually need them.</p>
+                        </article>
+                    </section>
                 </div>
 
+                <div className="notes-panel-scroll" style={calendarAreaHeight > 0 ? { height: `${calendarAreaHeight}px` } : undefined}>
                 <NotesList
                     notes={visibleNotes}
                     onDelete={deleteNote}
@@ -1324,6 +1360,7 @@ function App() {
                     onStart={startTimer}
                     onPause={pauseTimer}
                 />
+                </div>
             </div>
 
             <WorkspaceSidebar
@@ -1453,79 +1490,7 @@ function App() {
                     setAboutOpen(false)
                 }
             />
-                    <section
-                        className="calendar-guide"
-                        aria-label="How to use Focus OS"
-                    >
-                        <div className="calendar-guide-header">
-                            <span className="calendar-guide-eyebrow">
-                                Focus OS · Practical Guide
-                            </span>
-
-                            <h2>
-                                Turn the calendar into a working plan
-                            </h2>
-
-                            <p>
-                                Use the calendar for commitments,
-                                notes for details, and the other
-                                workspace tools only when they add value.
-                            </p>
-                        </div>
-
-                        <article className="calendar-guide-article">
-                            <h3>1. Start with the calendar</h3>
-                            <p>
-                                Click a day to create a note for that date.
-                                Put appointments, deadlines, important calls
-                                and other things that genuinely belong to a
-                                particular day on the calendar.
-                            </p>
-
-                            <h3>2. Write the details, not just the title</h3>
-                            <p>
-                                Use the note itself for the information you
-                                need when the day arrives. A useful entry
-                                should reduce the amount of remembering you
-                                have to do later.
-                            </p>
-
-                            <h3>3. Plan before you execute</h3>
-                            <p>
-                                Brian Tracy's published time-management
-                                material emphasizes planning the coming day,
-                                making a list and identifying the most
-                                important task before starting work.
-                            </p>
-
-                            <h3>4. Review instead of constantly rebuilding</h3>
-                            <p>
-                                David Allen's Getting Things Done method puts
-                                strong emphasis on regular reviews, including
-                                checking previous and upcoming calendar data
-                                and the actions they trigger.
-                            </p>
-
-                            <h3>5. A simple Focus OS routine</h3>
-                            <p>
-                                Before finishing the day, check tomorrow's
-                                calendar. Add the important tasks and
-                                information you already know. In the morning,
-                                open the calendar, choose the day's real
-                                priority, and work through your notes instead
-                                of trying to remember everything from your head.
-                            </p>
-
-                            <h3>6. Keep the system small</h3>
-                            <p>
-                                The calendar is the hard landscape: things
-                                that must happen on a particular day. Notes
-                                hold useful detail. Matrix, Expenses and the
-                                other workspace tools are there when you
-                                actually need them.
-                            </p>
-                        </article>
-                    </section>
+                    
 
             <footer className="app-footer">
                 <span>
